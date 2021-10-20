@@ -7,10 +7,11 @@ Datos = {
 }
 
 async function Connection(sql, binds, autoCommit) {
+  //console.log('COnsultaE '+sql);
   let open = await oracledb.getConnection(Datos);
   let consulta = await open.execute(sql, binds, { autoCommit });
   open.release();
   return consulta;
 }
 
-exports.Connection = Connection;
+exports.Connection = Connection; 

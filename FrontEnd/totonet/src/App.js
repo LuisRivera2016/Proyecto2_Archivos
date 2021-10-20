@@ -4,9 +4,7 @@ import Inicio from './components/Routes/inicio.jsx';
 
 function App() {
   return (
-   <Inicio>
-
-   </Inicio>
+   <Inicio></Inicio>
   );
 }
 

@@ -12,7 +12,7 @@ function Rutas() {
                     </Inicio>
                 </Route>
             </Switch>
-        </Router>
+        </Router> 
     )
 }
 
