@@ -17,5 +17,4 @@ router.get('/getUsers', async(req, res) => {
     res.json(User);
 });
 
-
 module.exports = router;

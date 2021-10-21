@@ -3,6 +3,7 @@ const cors = require('cors');
 const fileupload = require("express-fileupload");
 const bodyParser = require('body-parser');
 const prueba = require('./routes/prueba');
+const admin = require('./routes/admin');
 const { off } = require('process');
 const dbConexion = require('./database');
 let fs = require('fs');
@@ -19,6 +20,8 @@ app.use(cors({
 app.use(fileupload());
 app.use(express.static("files"));
 app.use('/',prueba);//rutas
+app.use('/Admin',admin);//admin
+app.use(bodyParser.urlencoded({extended:true}));
 
 
 
@@ -126,7 +129,7 @@ function leer(nameArch) {
         }
     });
 }
-leer();
+//leer();
 
 
 //funciones para insertar
