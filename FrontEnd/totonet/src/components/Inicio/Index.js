@@ -8,12 +8,13 @@ function Index() {
   
     const saveFile = (e) => {
       setFile(e.target.files[0]);
-      setFileName(e.target.files[0].name);
+      setFileName(e.target.files[0].name);;
     };
-  
+  ;
+
     const uploadFile = async (e) => {
       const formData = new FormData();
-      formData.append("file", file);
+      formData.append("file",file);
       formData.append("fileName", fileName);
       try {
         const res = await Axios.post(

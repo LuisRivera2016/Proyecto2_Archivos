@@ -1,0 +1,9 @@
+digraph G {
+0[label = "Departamentos" style="filled" color="darkgreen" shape="box"];
+1[label= " Recruitment " style="filled" color="dodgerblue" shape="box"];
+0-> 1 ;
+2[label= " Desarrollo " style="filled" color="dodgerblue" shape="box"];
+0-> 2 ;
+3[label= " musical group " style="filled" color="dodgerblue" shape="box"];
+1-> 3 ;
+}
