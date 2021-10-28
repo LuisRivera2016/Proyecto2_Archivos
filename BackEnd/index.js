@@ -4,7 +4,7 @@ const fileupload = require("express-fileupload");
 const bodyParser = require('body-parser');
 const prueba = require('./routes/prueba');
 const admin = require('./routes/admin');
-const user = require('./routes/user');
+const userR = require('./routes/user');
 const { off } = require('process');
 const dbConexion = require('./database');
 const bcrypt = require('bcrypt');
@@ -25,10 +25,13 @@ app.use(cors({
 
 app.use(fileupload());
 app.use(express.static("files"));
+app.use(express.json({limit: '50mb'}));
+app.use(express.urlencoded({limit: '50mb'}));
+
 app.use(express.json());
 app.use('/',prueba);//rutas
 app.use('/Admin',admin);//admin
-app.use('/Usuario',user);//user
+app.use('/Usuario',userR);//user
 
 
 
@@ -99,7 +102,8 @@ app.post('/Login',async(req,res)=>{
             const accesToken = generateAccesToken(tipoEstructura);
             const accessRefreshToken = generateRefreshToken(tipoEstructura);
             refreshTokens.push(accessRefreshToken);
-            return res.json({...tipoEstructura,accesToken: accesToken,refresToken:accessRefreshToken})
+            console.log('accesT ',accessRefreshToken);
+            return res.json({...tipoEstructura,accesToken: accesToken,refreshToken:accessRefreshToken})
             
         }
     }
@@ -114,7 +118,7 @@ function generateAccesToken(user){
     )
 }
 
-function generateRefreshToken(){
+function generateRefreshToken(user){
     return jwt.sign(
         user,
         'TokenRefresco2021',
@@ -125,11 +129,12 @@ function generateRefreshToken(){
 let refreshTokens = [];
 app.post('/refreshToken',(req,res)=>{
     const refreshToken = req.body.token;
-    if(!refresToken) return res.status(401).send({status: 401,message: 'No estas logeado'});
+    console.log('refT ',refreshToken);
+    if(!refreshToken) return res.status(401).send({status: 401,message: 'No estas logeado'});
     if(!refreshTokens.includes(refreshToken)){
-        return res.status(401).send({status: 401,message: 'Token no valido'});
+        return res.status(403).send({status: 403,message: 'Token no valido'});
     }
-    jwt.verify(refreshToken,'TokeRefresco2021',(err,user)=>{
+    jwt.verify(refreshToken,'TokenRefresco2021',(err,user)=>{
         err && console.log(err);
         refreshTokens = refreshTokens.filter((token)=>token !== refreshToken);
         let usuarioTemp ={
@@ -139,14 +144,14 @@ app.post('/refreshToken',(req,res)=>{
             "id_Tipo": user.id_Tipo,
             "id_Puesto": user.id_Puesto
         };
-        console.log(userTemp)
-    })
+        console.log(usuarioTemp)
+    
 
-    const newAccesToken = generateAccesToken(userTemp);
-    const newRefreshToken = generateRefreshToken(userTemp);
+    const newAccesToken = generateAccesToken(usuarioTemp);
+    const newRefreshToken = generateRefreshToken(usuarioTemp);
     refreshTokens.push(newRefreshToken);
-    res.status(200).send({accesToken: newAccesToken,refresToken:newRefreshToken})
-
+    res.status(200).send({...usuarioTemp,accesToken: newAccesToken,refresToken:newRefreshToken})
+    })
 })
 
 const verify = (req,res,next)=>{
@@ -168,7 +173,7 @@ const verify = (req,res,next)=>{
 //ler archivo
 function leer(nameArch) {
     //./files/${nameArch}
-    fs.readFile(`./files/Carga.xml`, 'utf-8', (err, data) => {
+    fs.readFile(`./files/archivo_entrada.xml`, 'utf-8', (err, data) => {
         if (err) {
             console.log('error: ', err);
         } else {
@@ -204,11 +209,11 @@ function lecturaDepartamentos(result,padre){
     var AuxFormato = [];
     var auxRecursividad = [];
     var listado = result.departamento
-    
 
     //recorremos departamentos
      listado.forEach(departamento => {
         var llaves = Object.keys(departamento);
+        
         
         AuxDepart.push([idDep, departamento.nombre[0], departamento.capital_total[0], padre])//guardar departamento
         //CADENA ARBOL
@@ -247,11 +252,10 @@ function lecturaDepartamentos(result,padre){
         });
         if(llaves.indexOf('departamentos')!= -1){
             auxRecursividad.push([departamento.departamentos[0],idDep]);
-            //ARBOL
-          
-     
+                        
        }
         idDep += 1;
+    
      });
 
    // mandamos a insertar el departamento
@@ -262,6 +266,7 @@ function lecturaDepartamentos(result,padre){
     InsertarFormato(AuxFormato)
     auxRecursividad.forEach(element => {
         lecturaDepartamentos(element[0],element[1]);
+       
     }); 
     cadenaArbol += `}%`;
 }
@@ -391,7 +396,7 @@ async function InsertarFormato(lista) {
 }
 
 //ARBOL
-app.get('/Arbol',(req,res)=>{
+app.get('/Arbol',async(req,res)=>{
    
     var arbol = cadenaArbol.split('%');
     var rutaImagen = '../FrontEnd/totonet/public/imageArbol.png';
@@ -407,9 +412,11 @@ app.get('/Arbol',(req,res)=>{
             const output = execSync(`dot ./files/Arbol.dot -Tpng -o ${rutaImagen}`, { encoding: 'utf-8' });
             //console.log('Output was:\n', output);
         })
-        res.status(200).send({status: 401,message:'/imageArbol.png'});
+        res.status(200).send({status: 200,message:`/imageArbol.png`});
     }
 })
+
+
 const port = process.env.PORT || 3001;
 
 app.listen(port,()=>{

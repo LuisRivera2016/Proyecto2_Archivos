@@ -50,7 +50,7 @@ router.post('/insertar', async(req, res) => {
 
 //OBTENER USUARIOS
 router.get('/getUsuarios', async(req, res) => {
-    sql = `Select * From Usuario INNER JOIN Tipo ON Tipo.id_Tipo = Usuario2.id_Tipo`;
+    sql = `Select * From Usuario INNER JOIN Tipo ON Tipo.id_Tipo = Usuario.id_Tipo`;
     let result = await dbConexion.Connection(sql, [], true);
     Usuario = [];
     result.rows.map(us => {

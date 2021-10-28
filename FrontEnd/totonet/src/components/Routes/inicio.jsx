@@ -6,7 +6,9 @@ import InicioA from '../Admin/Inicio.js';
 import Login from '../Inicio/Login.js'
 import Home from '../Inicio/Home.js';
 import Reportes from '../Admin/Reportes.js';
-import {UserContexto} from '../Context/UsuarioData.js';
+import Aplicacion from '../Usuario/Cargar.js';
+import {AuthProvider} from '../Context/UsuarioData.js';
+import RutaProtegida from '../Routes/RutaPrivada.js'
 import {useState} from 'react';
 
 function Rutas() {
@@ -14,7 +16,7 @@ function Rutas() {
     return (
         <Router>
             <Switch>
-                <UserContexto.Provider value={{usuario,setUsuario}}>
+                <AuthProvider value={{usuario,setUsuario}}>
                 <Route exact path ="/">
                     <Home>
                         
@@ -25,25 +27,30 @@ function Rutas() {
 
                     </Inicio>
                 </Route>
-                <Route exact path="/Admin">
+                <Route exact path="/Aplicacion">
+                    <Aplicacion>
+
+                    </Aplicacion>
+                </Route>
+                <RutaProtegida exact path="/Admin">
                     <InicioA>
                         
                     </InicioA>
-                </Route>
-                <Route exact path="/Admin/Form">
+                </RutaProtegida>
+                <RutaProtegida exact path="/Admin/Form">
                     <Admin>   
                     </Admin>
-                </Route>
+                </RutaProtegida>
                 <Route exact path="/Login">
                     <Login> 
                     </Login>
                 </Route>
-                <Route exact path="/Admin/Reportes">
+                <RutaProtegida exact path="/Admin/Reportes">
                     <Reportes>
                         
                     </Reportes>
-                </Route>
-                </UserContexto.Provider>
+                </RutaProtegida>
+                </AuthProvider>
             </Switch>
         </Router> 
     )

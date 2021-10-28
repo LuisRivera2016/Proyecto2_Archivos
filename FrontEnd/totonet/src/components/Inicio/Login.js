@@ -4,27 +4,11 @@ import React from 'react'
 import {Link,Redirect} from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Modal,ModalBody,ModalHeader,ModalFooter} from 'reactstrap'; 
-import {UserContexto} from '../Context/UsuarioData.js';
+import AuthContext from '../Context/UsuarioData.js';
 
 
 function Login() {
-    const [usuario, setUsuario] = useState("");
-    const [pass, setPass] = useState("");
-    const {setUser} = useContext(UserContexto);
-    const [redireccion, setRedireccion] = useState(false);
-
-    const Submit = ()=>{
-        Axios.post("http://localhost:3001/Login",{
-            Nombre: usuario,
-            Password: pass
-        }).then((res)=>{
-            setUser(res.data);
-            setRedireccion(true);
-            console.log('Si existe usuario');
-        }).catch((e)=>{
-            console.log('No existe usuario');
-        })
-    }
+    const  {setNombre:setUsuario,setPass,RedirectC:redireccion,SubmitForm} = useContext(AuthContext);
 
     if(redireccion){
       return <Redirect to="/"/>
@@ -64,8 +48,8 @@ function Login() {
           class="btn btn-primary"
           onClick={(e) => {
             e.preventDefault();
-            console.log( `useer: ${usuario} pass: ${pass}`);
-            Submit();
+            //console.log( `useer: ${usuario} pass: ${pass}`);
+            SubmitForm();
           }}
         >
           Ingresar
