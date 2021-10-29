@@ -12,9 +12,10 @@ let fs = require('fs');
 const xml2js = require('xml2js');
 const { parse } = require('path');
 const jwt = require('jsonwebtoken');
+const execSync = require('child_process').execSync;
 const parser = new xml2js.Parser({ attrkey: "ATTR" });
 const app = express();
-const execSync = require('child_process').execSync;
+
 
 
 
@@ -23,43 +24,15 @@ app.use(cors({
     methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH']
 }));
 
-app.use(fileupload());
-app.use(express.static("files"));
+
 app.use(express.json({limit: '50mb'}));
 app.use(express.urlencoded({limit: '50mb'}));
-
+app.use(fileupload());
+app.use(express.static("files"));
 app.use(express.json());
 app.use('/',prueba);//rutas
 app.use('/Admin',admin);//admin
 app.use('/Usuario',userR);//user
-
-
-
-
-app.post("/upload", (req, res) => {
-    const newpath = __dirname + "/files/";
-    const file = req.files.file;
-    const filename = file.name;
-
-  
-    file.mv(`${newpath}${filename}`, (err) => {
-      if (err) {
-        res.status(500).send({ message: "File upload failed", code: 200 });
-      }
-
-      fs.readFile(`${newpath}${filename}`, "utf8", function (err, data) {
-        if (err) return res.status(500).send({ message: err })
-
-        //--Recorrer xml
-        leer(filename)
-        
-
-    });
-
-      res.status(200).send({ message: "File Uploaded", code: 200 });
-    });
-
-  });
 
 
 app.get('/',(req,res) =>{
@@ -169,11 +142,37 @@ const verify = (req,res,next)=>{
         res.status(401).send({status: 401,message: "credenciales incorrectas"})
     }
 }
-//-------------------------------------------------------
+//------------------------------------------------------
+//-----------------------------CARGA MASIVA
+app.post("/upload", (req, res) => {
+    const newpath = __dirname + "/files/";
+    console.log(newpath);
+    const file = req.files.file;
+    const filename = file.name;
+    
+  
+    file.mv(`${newpath}${filename}`, (err) => {
+      if (err) {
+        res.status(500).send({ message: "File upload failed", code: 200 });
+      }
+
+      fs.readFile(`${newpath}${filename}`, "utf8", function (err, data) {
+        if (err) return res.status(500).send({ message: err })
+
+        //--Recorrer xml
+        leer(filename)
+        
+
+    });
+
+      res.status(200).send({ message: "File Uploaded", code: 200 });
+    });
+
+  });
 //ler archivo
 function leer(nameArch) {
     //./files/${nameArch}
-    fs.readFile(`./files/archivo_entrada.xml`, 'utf-8', (err, data) => {
+    fs.readFile(`../BackEnd/files/${nameArch}`, 'utf-8', (err, data) => {
         if (err) {
             console.log('error: ', err);
         } else {
@@ -188,6 +187,16 @@ function leer(nameArch) {
                 idFormato = 1;
                 lecturaDepartamentos(result.departamentos,0);
             });
+             Insertardepartamentos(AuxDepart);
+             console.log('FDEPARTAMENTOS');
+             InsertarPuestos(AuxPuestos);
+             console.log('FPUESTOS');
+             InsertarCategorias(AuxCategorias);
+             console.log('FCATEGORIAS');
+             InsertarRequisito(AuxRequisito);
+             console.log('FREQUISITOS');
+             InsertarFormato(AuxFormato,AuxRequisito);
+             console.log('FFORMATOS');
         }
     });
 }
@@ -198,15 +207,15 @@ var idCategorias = 0;
 var idRequisito = 0;
 var idFormato = 0;
 var cadenaArbol = `digraph G {\n0[label = "Departamentos" style="filled" color="darkgreen" shape="box"];\n`;
-
-leer();
+var AuxDepart = [];
+var AuxPuestos = [];
+var AuxCategorias = [];
+var AuxRequisito = [];
+var AuxFormato = [];
+//leer();
 
 function lecturaDepartamentos(result,padre){
-    var AuxDepart = [];
-    var AuxPuestos = [];
-    var AuxCategorias = [];
-    var AuxRequisito = [];
-    var AuxFormato = [];
+   
     var auxRecursividad = [];
     var listado = result.departamento
 
@@ -259,11 +268,7 @@ function lecturaDepartamentos(result,padre){
      });
 
    // mandamos a insertar el departamento
-    Insertardepartamentos(AuxDepart);
-    InsertarPuestos(AuxPuestos);
-    InsertarCategorias(AuxCategorias);
-    InsertarRequisito(AuxRequisito);
-    InsertarFormato(AuxFormato)
+    
     auxRecursividad.forEach(element => {
         lecturaDepartamentos(element[0],element[1]);
        
@@ -272,30 +277,36 @@ function lecturaDepartamentos(result,padre){
 }
 
 //funciones para insertar
-async function Insertardepartamentos(lista) {
-    //console.log("\n#########---APARTAMENTOS---##########")
-    for (const val of lista){
-        var query = 'INSERT INTO Departamento(id_Departamento,Nombre,Capital,DepartamentoP) VALUES('+val[0]
-        +','+`TRIM('${val[1]}')`+','+val[2]+`,TRIM('${val[3]}')`+')';
-        console.log(query);
-        try {
-            //var result = await dbConexion.Connection(query, [], true);
-        } catch (error) {
-            console.log('error '+error);
+ async function Insertardepartamentos(lista) {
+
+    
+        for (const val of lista){
+            var query = 'INSERT INTO Departamento(id_Departamento,Nombre,Capital,DepartamentoP) VALUES('+val[0]
+            +','+`TRIM('${val[1]}')`+','+val[2]+`,TRIM('${val[3]}')`+')';
+            
+            try {
+               var result = await dbConexion.Connection(query, [], true);
+               console.log(query);
+            } catch (error) {
+                console.log('error '+error);
+            }
+            
+            //console.log('ID:' + val[0], 'nombre:' + val[1], 'valor:' + val[2]) 
         }
-        
-        //console.log('ID:' + val[0], 'nombre:' + val[1], 'valor:' + val[2]) 
-    }
+    
+    //console.log("\n#########---APARTAMENTOS---##########")
+    
 }
 //PUESTOS
-async function InsertarPuestos(lista) {
+ async function InsertarPuestos(lista) {
     //console.log("\n#########---PUESTOS---##########")
     for (const val of lista){
         var query = 'INSERT INTO Puesto(id_Puesto,Nombre,Salario,Imagen,Disponible,id_Departamento) VALUES('+
-        val[0]+','+`TRIM('${val[1]}')`+','+`TRIM('${val[4]}')`+','+val[2]+',1,'+val[3]+')';
-        console.log(query);
+        val[0]+','+`TRIM('${val[1]}')`+','+val[2]+','+`TRIM('${val[4]}')`+',1,'+val[3]+')';
+       
         try {
-            //var result = await dbConexion.Connection(query, [], true);
+           var result = await dbConexion.Connection(query, [], true);
+           console.log(query);
         } catch (error) {
             console.log('error '+error);
         }
@@ -305,24 +316,37 @@ async function InsertarPuestos(lista) {
 }
 
 //CATEGORIAS
-async function InsertarCategorias(lista) {
+ async function InsertarCategorias(lista) {
     //console.log("\n#########---CATEGORIAS---##########")
-    for (const val of lista){
+    var auxCategoria = [];
+    lista.forEach(element =>{
+        if(!auxCategoria.includes(element[1])){
+            auxCategoria.push(element[1]);
+        }
+    })
+    //CATEGORIA
+    for (let index = 0; index < auxCategoria.length; index++) {
+        var pk = index + 1;
         var query = 'INSERT INTO Categoria(id_Categoria,Nombre) VALUES('+
-        val[0]+','+`TRIM('${val[1]}')`+')';
-        console.log(query);
+        pk+','+`TRIM('${auxCategoria[index]}')`+')';
+        
         try {
-            //var result = await dbConexion.Connection(query, [], true);
+          var result = await dbConexion.Connection(query, [], true);
+           console.log(query);
         } catch (error) {
             console.log('error '+error);
         }
-        // console.log('ID:' + val[0], 'nombre:' + val[1], 'valor:' + val[2]) 
-       //PUESTO_CATEGORIA
+        
+    }
+    //PUESTO_CATEGORIA
+    for (const val of lista){
+        //PUESTO_CATEGORIA
        var query2 = 'INSERT INTO Puesto_Categoria(id_Puesto,id_Categoria) VALUES('+
-       val[2]+','+val[0]+')';
-       console.log(query2);
+       val[2]+','+(auxCategoria.indexOf(val[1])+1)+')';
+       
        try {
-           //var result = await dbConexion.Connection(query2, [], true);
+           var result = await dbConexion.Connection(query2, [], true);
+           console.log(query2);
        } catch (error) {
            console.log('error '+error);
        }
@@ -330,24 +354,41 @@ async function InsertarCategorias(lista) {
 }
 
 //REQUISITO
-async function InsertarRequisito(lista) {
+var auxRequisito = [];
+ async function InsertarRequisito(lista) {
     //console.log("\n#########---REQUISITOS---##########")
-    for (const val of lista){
+    
+    var auxTamano = [];
+    var auxObligatorio = [];
+    lista.forEach(element =>{
+        if(!auxRequisito.includes(element[1])){
+            auxRequisito.push(element[1])
+            auxTamano.push(element[2])
+            auxObligatorio.push(element[3])
+        }
+    });
+    //REQUISITO
+    for (let index = 0; index < auxRequisito.length; index++) {
+        var pk = index + 1;
         var query = 'INSERT INTO Requisito(id_Requisito,Nombre,Tamano,Obligatorio) VALUES('+
-        val[0]+','+`TRIM('${val[1]}')`+','+val[2]+','+val[3]+')';
-        console.log(query);
+        pk+','+`TRIM('${auxRequisito[index]}')`+','+auxTamano[index]+','+auxObligatorio[index]+')';
+        
         try {
-            //var result = await dbConexion.Connection(query, [], true);
+           var result = await dbConexion.Connection(query, [], true);
+            console.log(query);
         } catch (error) {
             console.log('error '+error);
         }
-        // console.log('ID:' + val[0], 'nombre:' + val[1], 'valor:' + val[2]) 
-       //PUESTO_REQUISITO
+    }
+     //PUESTO_REQUISITO
+    for (const val of lista){
+       
        var query2 = 'INSERT INTO Puesto_Requisito(id_Puesto,id_Requisito) VALUES('+
-       val[4]+','+val[0]+')';
-       console.log(query2);
+       val[4]+','+(auxRequisito.indexOf(val[1])+1)+')';
+       
        try {
-           //var result = await dbConexion.Connection(query2, [], true);
+          var result = await dbConexion.Connection(query2, [], true);
+          console.log(query2);
        } catch (error) {
            console.log('error '+error);
        }
@@ -356,7 +397,7 @@ async function InsertarRequisito(lista) {
 
 
 //FORMATO
-async function InsertarFormato(lista) {
+ async function InsertarFormato(lista,lista2) {
     //console.log("\n#########---FORMATO---##########")
     var auxFormato = []
     lista.forEach(element => {
@@ -369,21 +410,33 @@ async function InsertarFormato(lista) {
         var pk = index +1;
         var query = 'INSERT INTO Formato(id_Formato,Nombre) VALUES('+
         pk+','+`TRIM('${auxFormato[index]}')`+')';
-        console.log(query);
+       
         try {
-            //var result = await dbConexion.Connection(query, [], true);
+           var result = await dbConexion.Connection(query, [], true);
+            console.log(query);
         } catch (error) {
             console.log('error '+error);
         }
     }
     //FORMATO_REQUISITO
+    var indexR = 0;
+    lista2.forEach(element => {
+        var idReq = element[0];
+        lista.forEach(element2 =>{
+            if(element2[2] == idReq){
+                indexR = auxRequisito.indexOf(element[1]) + 1;
+                element2[2] = indexR;
+            }
+        })
+    })
    // console.log("\n#########---FORMATO-REQUISITO--##########")
    for (const val of lista){
         var query2 = 'INSERT INTO Requisito_Formato(id_Requisito,id_Formato) VALUES('+val[2]
         +','+(auxFormato.indexOf(val[1]) + 1)+')';
-        console.log(query2);
+       
     try {
-        //var result = await dbConexion.Connection(query2, [], true);
+       var result = await dbConexion.Connection(query2, [], true);
+        console.log(query2);
     } catch (error) {
         console.log('error '+error);
     }
@@ -395,7 +448,7 @@ async function InsertarFormato(lista) {
 
 }
 
-//ARBOL
+//------------------------------------------------------------ARBOL
 app.get('/Arbol',async(req,res)=>{
    
     var arbol = cadenaArbol.split('%');
@@ -409,14 +462,14 @@ app.get('/Arbol',async(req,res)=>{
                 return console.log(err);
             }
             console.log('creado correctamente')
-            const output = execSync(`dot ./files/Arbol.dot -Tpng -o ${rutaImagen}`, { encoding: 'utf-8' });
+            const output = execSync(`dot ../files/Arbol.dot -Tpng -o ${rutaImagen}`, { encoding: 'utf-8' });
             //console.log('Output was:\n', output);
         })
         res.status(200).send({status: 200,message:`/imageArbol.png`});
     }
 })
 
-
+//-------------------------------------------------------
 const port = process.env.PORT || 3001;
 
 app.listen(port,()=>{

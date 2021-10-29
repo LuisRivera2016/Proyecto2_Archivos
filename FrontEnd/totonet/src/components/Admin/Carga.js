@@ -1,9 +1,13 @@
-import { useEffect, useState } from 'react'
+import React from 'react'
+import { useEffect,useState ,useContext} from 'react';
+import AuthContext from '../Context/UsuarioData.js';
+import {Link} from 'react-router-dom';
 import Axios from 'axios'
 
 
-function Index() {
-    const [file, setFile] = useState();
+function Carga() {
+  const { user } = useContext(AuthContext);
+  const [file, setFile] = useState();
     const [fileName, setFileName] = useState("");
   
     const saveFile = (e) => {
@@ -17,6 +21,7 @@ function Index() {
       formData.append("file",file);
       formData.append("fileName", fileName);
       try {
+        console.log(fileName);
         const res = await Axios.post(
           "http://localhost:3001/upload",
           formData
@@ -26,14 +31,20 @@ function Index() {
         console.log(ex);
       }
     };
-  
-    return (
+
+  return (
+    <div>
+      {/* <h1>Usuario:{user.Nombre}</h1><br/><br/> */}
       <div className="App">
         <input type="file" onChange={saveFile} />
-        <button onClick={uploadFile}>Upload</button>
+        <button className="btn btn-primary" onClick={uploadFile}>Upload</button>
       </div>
-    );
-  }
-  
+          <Link to="/Admin">
+            <button className="btn btn-primary float-right">Regresar</button>
+          </Link>
+       
+    </div>
+  );
+}
 
-export default Index
+export default Carga

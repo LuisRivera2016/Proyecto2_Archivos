@@ -1,12 +1,12 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch} from "react-router-dom";
-import Inicio from "../Inicio/Index.js"
 import Admin from "../Admin/Admin.js"
 import InicioA from '../Admin/Inicio.js';
 import Login from '../Inicio/Login.js'
 import Home from '../Inicio/Home.js';
 import Reportes from '../Admin/Reportes.js';
 import Aplicacion from '../Usuario/Cargar.js';
+import Carga from '../Admin/Carga.js';
 import {AuthProvider} from '../Context/UsuarioData.js';
 import RutaProtegida from '../Routes/RutaPrivada.js'
 import {useState} from 'react';
@@ -22,11 +22,6 @@ function Rutas() {
                         
                     </Home>
                 </Route>
-                <Route exact path="/Inicio">
-                    <Inicio>
-
-                    </Inicio>
-                </Route>
                 <Route exact path="/Aplicacion">
                     <Aplicacion>
 
@@ -40,6 +35,11 @@ function Rutas() {
                 <RutaProtegida exact path="/Admin/Form">
                     <Admin>   
                     </Admin>
+                </RutaProtegida>
+                <RutaProtegida exact path="/Admin/Carga">
+                    <Carga>
+
+                    </Carga>
                 </RutaProtegida>
                 <Route exact path="/Login">
                     <Login> 

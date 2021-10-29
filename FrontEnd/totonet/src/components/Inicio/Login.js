@@ -20,7 +20,7 @@ function Login() {
         <div class="form-group">
           <label for="exampleInputEmail1">Usuario</label>
           <input
-            type="texxt"
+            type="text"
             class="form-control"
             id="exampleInputEmail1"
             aria-describedby="emailHelp"

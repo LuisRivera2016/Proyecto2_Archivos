@@ -2,6 +2,8 @@ const express = require('express');
 const dbConexion = require('../database');
 const router = express.Router();
 const bcrypt = require('bcrypt');
+const { Router } = require('express');
+
 
 
 //OBTENER ROLES PARA INSERTAR
@@ -107,6 +109,36 @@ router.put('/actualizarUsuarios', async(req, res) => {
         console.log(error);
     }
     
+});
+
+router.get('/getPuestos', async(req, res) => {
+    const filtro = req.body.Nombre;
+    var sql = ``;
+    console.log('filtro '+filtro);
+    if(filtro){
+        sql = `Select * From Puesto INNER JOIN Departamento 
+            ON Puesto.id_Departamento = Departamento.id_Departamento
+            WHERE Puesto.Nombre LIKE '%${filtro}%'`;
+    }else{
+        sql = `Select * From Puesto INNER JOIN Departamento 
+            ON Puesto.id_Departamento = Departamento.id_Departamento`;
+    }
+    
+    let result = await dbConexion.Connection(sql, [], true);
+    Tipo = [];
+    result.rows.map(us => {
+        let UserSchema = {
+            "id_Puesto":us[0],
+            "Nombre": us[1],
+            "Salario": us[2],
+            "Imagen": us[3],
+            "Disponible": us[4],
+            "id_Departamento": us[5],
+            "NombreDep": us[7]
+        }
+        Tipo.push(UserSchema);
+    })
+    res.json(Tipo);
 });
 
 

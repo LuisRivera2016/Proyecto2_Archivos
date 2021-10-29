@@ -10,7 +10,7 @@ function Reportes() {
     const [cadenaA, setCadenaA] = useState(null);
 
     function getImagen(){
-        Axios.get("http://localhost:3001/Arbol",{
+        Axios.get("http://localhost:3001/Admin/Arbol",{
         }).then((cadena)=>{
             console.log(cadena.data);
             setCadenaA(cadena.data);
