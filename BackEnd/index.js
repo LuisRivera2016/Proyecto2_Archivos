@@ -24,11 +24,10 @@ app.use(cors({
     methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH']
 }));
 
-
-app.use(express.json({limit: '50mb'}));
-app.use(express.urlencoded({limit: '50mb'}));
 app.use(fileupload());
 app.use(express.static("files"));
+app.use(express.json({limit: '500mb'}));
+app.use(express.urlencoded({limit: '500mb'}));
 app.use(express.json());
 app.use('/',prueba);//rutas
 app.use('/Admin',admin);//admin
@@ -212,7 +211,7 @@ var AuxPuestos = [];
 var AuxCategorias = [];
 var AuxRequisito = [];
 var AuxFormato = [];
-//leer();
+//leer('archivo_entrada.xml');
 
 function lecturaDepartamentos(result,padre){
    
@@ -310,7 +309,14 @@ function lecturaDepartamentos(result,padre){
         } catch (error) {
             console.log('error '+error);
         }
-        
+
+        var query2 = `INSERT INTO Puesto_Calificacion(id_Puesto,Calificacion) VALUES(${val[0]},5)`;
+        try {
+        var result = await dbConexion.Connection(query2, [], true);
+        console.log(query);
+        } catch (error) {
+            console.log('error '+error);
+        }
        // console.log('ID:' + val[0], 'nombre:' + val[1], 'valor:' + val[2]) 
     }
 }
@@ -470,6 +476,92 @@ app.get('/Arbol',async(req,res)=>{
 })
 
 //-------------------------------------------------------
+function getFileExtension(filename){
+    return (/[.]/.exec(filename)) ? /[^.]+$/.exec(filename)[0] : undefined;
+  }
+
+app.post("/aplicar", async(req, res) => {
+    const newpath = __dirname + "/files/";
+    const NombreA = req.body.Nombre;
+    const ApellidoA = req.body.Apellido;
+    const DPIA = req.body.DPI;
+    const CorreoA = req.body.Correo;
+    const DireccionA = req.body.Direccion;
+    const TelefonoA = req.body.Telefono;
+    const fileA = req.files.file;
+    const idPuesto = req.body.idPuesto;
+    const idDepartamento = req.body.idDepartamento;
+    var fileName = fileA.name;
+    const fileSize = fileA.size;
+    console.log('Nombre: '+NombreA);
+    console.log('Apellido: '+ApellidoA);
+    console.log('DPI: '+DPIA);
+    console.log('FileN: '+fileName);
+    
+    //     Extension: getFileExtension(name),
+    //     Peso: files[i].size/1048576,
+    const extension = getFileExtension(fileName);
+    const nombreCV = `CV-${DPIA}.${extension}`;
+    req.files.file.name = nombreCV;
+    fileName =  req.files.file.name;
+    const ruta = newpath+fileName;
+    console.log('Ruta '+ruta);
+
+    fileA.mv(`${newpath}${fileName}`, (err) => {
+      if (err) {
+        res.status(500).send({ message: "File upload failed", code: 200 });
+      }
+    });
+    let sql = `INSERT INTO Aplicante(Estado,DPI,Nombre,Apellido,Correo,Direccion,Telefono,
+        Entrada,CV,id_Puesto) 
+    VALUES(0,${DPIA},'${NombreA}','${ApellidoA}','${CorreoA}','${DireccionA}',${TelefonoA},0,'${ruta}',${idPuesto})`;
+    console.log(sql);                 
+    
+    try {
+        let result = await dbConexion.Connection(sql, [], true);
+    } catch (error) {
+        console.log(error);
+    }
+
+
+    let sql2 = `SELECT conteo.Id_Usuario FROM (SELECT Id_Usuario,COUNT(Id_Usuario)as cont FROM Revision
+    GROUP BY Id_Usuario)conteo
+    INNER JOIN USUARIO ON USUARIO.Id_Usuario = conteo.Id_Usuario
+    WHERE conteo.cont = (
+    SELECT MIN(conteo.cont) FROM (
+    SELECT Id_Usuario,COUNT(Id_Usuario)as cont FROM Revision
+    GROUP BY Id_Usuario)conteo)
+    AND USUARIO.Id_Departamento = ${idDepartamento}`;
+    console.log(sql2);                 
+    
+    try {
+        let result = await dbConexion.Connection(sql2, [], true);
+
+    } catch (error) {
+        console.log(error);
+    }finally{
+        if(result.rows == 0){
+            console.log('NO hay revisiones');
+            let sql3 = `SELECT Id_Usuario FROM Usuario WHERE id_Departamento = ${idDepartamento} LIMIT 1`;
+            console.log(sql3);
+            try {
+                let result = await dbConexion.Connection(sql3, [], true);
+        
+            } catch (error) {
+                console.log(error);
+            }
+
+        }else{
+
+        }
+    }
+    res.status(200).send({ message: "Se envio", code: 200 });
+  });
+
+
+
+
+//--------------------------------------------------------
 const port = process.env.PORT || 3001;
 
 app.listen(port,()=>{

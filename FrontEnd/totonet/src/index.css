@@ -26,7 +26,7 @@
 }
 
 .container-carousel .carousel .item .info {
-  height: 210px;
+  height: 230px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -49,7 +49,6 @@
 
 .container-carousel .carousel .item .info .oldPrice {
   font-size: 0.8rem;
-  text-decoration: line-through;
   flex-grow: 1;
   color: #e81a5d;
 }

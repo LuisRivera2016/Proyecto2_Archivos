@@ -17,6 +17,7 @@ function Inicio() {
         Estado: '',
         id_Tipo: '',
         id_Puesto: '' ,
+        id_Departamento: '',
         tipo:''
       });
 
@@ -169,6 +170,14 @@ function Inicio() {
         <br/>
             <Link to="/Admin/Form">
             <button className="btn btn-success">Agregar
+            </button>
+            </Link><br/><br/>
+            <Link to="/">
+            <button className="btn btn-success">Salir
+            </button>
+            </Link><br/><br/>
+            <Link to="/Admin/Reportes">
+            <button className="btn btn-success">Reportes
             </button>
             </Link>
         </div>

@@ -8,7 +8,7 @@ const { Router } = require('express');
 
 //OBTENER ROLES PARA INSERTAR
 router.get('/getRoles', async(req, res) => {
-    sql = "Select * From Tipo";
+    sql = "Select * From Tipo WHERE Rol != 'Administrador'";
     let result = await dbConexion.Connection(sql, [], true);
     Tipo = [];
     result.rows.map(us => {
@@ -21,12 +21,28 @@ router.get('/getRoles', async(req, res) => {
     res.json(Tipo);
 });
 
+//OBTENER ROLES PARA INSERTAR
+router.get('/getDepartamentos', async(req, res) => {
+    sql = "Select * From Departamento";
+    let result = await dbConexion.Connection(sql, [], true);
+    Dep = [];
+    result.rows.map(us => {
+        let UserSchema = {
+            "id_Departamento":us[0],
+            "Nombre": us[1]
+        }
+        Dep.push(UserSchema);
+    })
+    res.json(Dep);
+});
+
 //INSERTAR USUARIOS 
 router.post('/insertar', async(req, res) => {
     var usuario = req.body.Nombre;
     var password = req.body.Password;
     var hahsPass = '';
     var tipo = req.body.id_Tipo;
+    var departamento = req.body.id_Departamento;
     const tiempoTranscurrido = Date.now();
     const hoy = new Date(tiempoTranscurrido);
     var fechaC = hoy.toLocaleDateString();//21/10/2020
@@ -36,8 +52,8 @@ router.post('/insertar', async(req, res) => {
     // const hashPass = await bcrypt.hash(password,12,function(err,hash){
     //     passH = hash;
     // });
-    let sql = `INSERT INTO Usuario(Nombre,Password,Fecha_Creacion,Fecha_Fin,Estado,id_Tipo,id_Puesto) 
-    VALUES('${usuario}','${password}',TO_DATE('${fecha.toLocaleDateString("en-US", fechaC)}','MM/DD/YYYY'),NULL,1,${tipo},NULL)`;
+    let sql = `INSERT INTO Usuario(Nombre,Password,Fecha_Creacion,Fecha_Fin,Estado,id_Tipo,id_Puesto,id_Departamento) 
+    VALUES('${usuario}','${password}',TO_DATE('${fecha.toLocaleDateString("en-US", fechaC)}','MM/DD/YYYY'),NULL,1,${tipo},NULL,${departamento})`;
     console.log(sql);                 
     
     try {
@@ -52,7 +68,8 @@ router.post('/insertar', async(req, res) => {
 
 //OBTENER USUARIOS
 router.get('/getUsuarios', async(req, res) => {
-    sql = `Select * From Usuario INNER JOIN Tipo ON Tipo.id_Tipo = Usuario.id_Tipo`;
+    sql = `Select * From Usuario INNER JOIN Tipo ON Tipo.id_Tipo = Usuario.id_Tipo
+                WHERE Tipo.id_Tipo != 1`;
     let result = await dbConexion.Connection(sql, [], true);
     Usuario = [];
     result.rows.map(us => {
@@ -65,7 +82,7 @@ router.get('/getUsuarios', async(req, res) => {
             "Estado": us[5],
             "id_Tipo": us[6],
             "id_Puesto": us[7],
-            "tipo":us[9]
+            "tipo":us[10]
         }
         Usuario.push(UserSchema);
     })
@@ -110,36 +127,44 @@ router.put('/actualizarUsuarios', async(req, res) => {
     }
     
 });
-
+//OBTENER PUESTOS DISPONIBLES
 router.get('/getPuestos', async(req, res) => {
-    const filtro = req.body.Nombre;
+    //console.log(req.body);
+    //const filtro = req.body.Nombre;
     var sql = ``;
-    console.log('filtro '+filtro);
-    if(filtro){
+    let result;
+   //console.log('filtro '+filtro);
+    
         sql = `Select * From Puesto INNER JOIN Departamento 
             ON Puesto.id_Departamento = Departamento.id_Departamento
-            WHERE Puesto.Nombre LIKE '%${filtro}%'`;
-    }else{
-        sql = `Select * From Puesto INNER JOIN Departamento 
-            ON Puesto.id_Departamento = Departamento.id_Departamento`;
-    }
+            WHERE Puesto.Disponible !=0`;
+        
+            try {
+                 result = await dbConexion.Connection(sql, [], true); 
+            } catch (error) {
+                console.log(error);
+            }
     
-    let result = await dbConexion.Connection(sql, [], true);
-    Tipo = [];
-    result.rows.map(us => {
-        let UserSchema = {
-            "id_Puesto":us[0],
-            "Nombre": us[1],
-            "Salario": us[2],
-            "Imagen": us[3],
-            "Disponible": us[4],
-            "id_Departamento": us[5],
-            "NombreDep": us[7]
-        }
-        Tipo.push(UserSchema);
-    })
-    res.json(Tipo);
+        Tipo = [];
+        result.rows.map(us => {
+            let UserSchema = {
+                "id_Puesto":us[0],
+                "Nombre": us[1],
+                "Salario": us[2],
+                "Imagen": us[3],
+                "Disponible": us[4],
+                "id_Departamento": us[5],
+                "NombreDep": us[7]
+            }
+            Tipo.push(UserSchema);
+        })
+        res.json(Tipo);
+    
+    
 });
+
+
+
 
 
 module.exports = router;

@@ -7,9 +7,11 @@ import {Modal,ModalBody,ModalHeader,ModalFooter} from 'reactstrap';
 
 function Admin() {
     const [roles, setRoles] = useState([]);
+    const [departamentos, setDepartamentos] = useState([]);
     const [usuario, setUsuario] = useState("");
     const [pass, setPass] = useState("");
     const [rol, setRol] = useState(0);
+    const [rolD, setRolD] = useState(0);
 
     useEffect(()=>{
         Axios.get("http://localhost:3001/Admin/getRoles",{
@@ -20,14 +22,24 @@ function Admin() {
         });
     },[])
 
+    useEffect(()=>{
+        Axios.get("http://localhost:3001/Admin/getDepartamentos",{
+        }).then((roles)=>{
+            setDepartamentos(roles.data);
+        }).catch((err)=>{
+            setDepartamentos([]);
+        });
+    },[])
+
 const Submit = ()=>{
     console.log(rol);
     Axios.post("http://localhost:3001/Admin/insertar",{
         Nombre: usuario,
         Password: pass,
-        id_Tipo: rol
+        id_Tipo: rol,
+        id_Departamento: rolD
     }).then(()=>{
-        console.log('Se inserto');
+        alert('Usuario agregado con Exito');
     }).catch((e)=>{
         console.log('No inserto');
     })
@@ -49,14 +61,25 @@ const Submit = ()=>{
                     setPass(e.target.value);
                 }
             }/><br/>
-        
+            <label fo="lname">Tipo de Usuario:</label><br/>
             <select name="Tipo_Usuario" onChange={(e)=>{
                 
-                setRol(e.target.options.selectedIndex+1);
-                console.log(e.target.options.selectedIndex+1);
+                setRol(e.target.options.selectedIndex+2);
+                console.log(e.target.options.selectedIndex+2);
             }}>
             {roles.map((index)=>{
                 return <option key={index.id_Tipo} value={index.Nombre}>{index.Nombre}</option>
+            })}
+
+            </select><br/>
+            <label fo="lname">Departamento al que pertenecera:</label><br/>
+            <select name="Departamentos" onChange={(e)=>{
+                
+                setRolD(e.target.options.selectedIndex+1);
+                console.log(e.target.options.selectedIndex+1);
+            }}>
+            {departamentos.map((index)=>{
+                return <option key={index.id_Departamento} value={index.Nombre}>{index.Nombre}</option>
             })}
 
             </select><br/>

@@ -1,5 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch} from "react-router-dom";
+import {AuthProvider} from '../Context/UsuarioData.js';
+import RutaProtegida from '../Routes/RutaPrivada.js';
+//RUTAS
 import Admin from "../Admin/Admin.js"
 import InicioA from '../Admin/Inicio.js';
 import Login from '../Inicio/Login.js'
@@ -7,16 +10,15 @@ import Home from '../Inicio/Home.js';
 import Reportes from '../Admin/Reportes.js';
 import Aplicacion from '../Usuario/Cargar.js';
 import Carga from '../Admin/Carga.js';
-import {AuthProvider} from '../Context/UsuarioData.js';
-import RutaProtegida from '../Routes/RutaPrivada.js'
-import {useState} from 'react';
+import FormularioAplicante from '../Inicio/FormularioAplicante.js';
+//
+
 
 function Rutas() {
-    const [usuario, setUsuario] = useState("");
     return (
         <Router>
             <Switch>
-                <AuthProvider value={{usuario,setUsuario}}>
+                <AuthProvider>
                 <Route exact path ="/">
                     <Home>
                         
@@ -50,6 +52,10 @@ function Rutas() {
                         
                     </Reportes>
                 </RutaProtegida>
+                <Route exact path="/Formulario/:idPuesto/:nombre/:idDepartamento">
+                    <FormularioAplicante>
+                    </FormularioAplicante>
+                </Route>
                 </AuthProvider>
             </Switch>
         </Router> 
