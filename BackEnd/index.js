@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const prueba = require('./routes/prueba');
 const admin = require('./routes/admin');
 const userR = require('./routes/user');
+const revisorR = require('./routes/revisor.js');
 const { off } = require('process');
 const dbConexion = require('./database');
 const bcrypt = require('bcrypt');
@@ -32,6 +33,7 @@ app.use(express.json());
 app.use('/',prueba);//rutas
 app.use('/Admin',admin);//admin
 app.use('/Usuario',userR);//user
+app.use('/Revisor',revisorR);//revisor
 
 
 app.get('/',(req,res) =>{
@@ -67,7 +69,8 @@ app.post('/Login',async(req,res)=>{
                     "Nombre": index[1],
                     "Estado": index[5],
                     "id_Tipo":index[6],
-                    "id_Puesto":index[7]
+                    "id_Puesto":index[7],
+                    "id_Departamento":index[8]
                 }
               
             })
@@ -523,38 +526,7 @@ app.post("/aplicar", async(req, res) => {
         console.log(error);
     }
 
-
-    let sql2 = `SELECT conteo.Id_Usuario FROM (SELECT Id_Usuario,COUNT(Id_Usuario)as cont FROM Revision
-    GROUP BY Id_Usuario)conteo
-    INNER JOIN USUARIO ON USUARIO.Id_Usuario = conteo.Id_Usuario
-    WHERE conteo.cont = (
-    SELECT MIN(conteo.cont) FROM (
-    SELECT Id_Usuario,COUNT(Id_Usuario)as cont FROM Revision
-    GROUP BY Id_Usuario)conteo)
-    AND USUARIO.Id_Departamento = ${idDepartamento}`;
-    console.log(sql2);                 
     
-    try {
-        let result = await dbConexion.Connection(sql2, [], true);
-
-    } catch (error) {
-        console.log(error);
-    }finally{
-        if(result.rows == 0){
-            console.log('NO hay revisiones');
-            let sql3 = `SELECT Id_Usuario FROM Usuario WHERE id_Departamento = ${idDepartamento} LIMIT 1`;
-            console.log(sql3);
-            try {
-                let result = await dbConexion.Connection(sql3, [], true);
-        
-            } catch (error) {
-                console.log(error);
-            }
-
-        }else{
-
-        }
-    }
     res.status(200).send({ message: "Se envio", code: 200 });
   });
 

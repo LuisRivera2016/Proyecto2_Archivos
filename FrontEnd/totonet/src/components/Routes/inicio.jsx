@@ -11,6 +11,8 @@ import Reportes from '../Admin/Reportes.js';
 import Aplicacion from '../Usuario/Cargar.js';
 import Carga from '../Admin/Carga.js';
 import FormularioAplicante from '../Inicio/FormularioAplicante.js';
+import InicioR from '../Revisor/Inicio.js';
+import CV from '../Revisor/CV.js';
 //
 
 
@@ -55,6 +57,14 @@ function Rutas() {
                 <Route exact path="/Formulario/:idPuesto/:nombre/:idDepartamento">
                     <FormularioAplicante>
                     </FormularioAplicante>
+                </Route>
+                <Route exact path="/Revisor">
+                    <InicioR></InicioR>
+                </Route>
+                <Route exact path="/Revisor/CV">
+                    <CV>
+
+                    </CV>
                 </Route>
                 </AuthProvider>
             </Switch>

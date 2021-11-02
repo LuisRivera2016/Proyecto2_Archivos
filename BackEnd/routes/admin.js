@@ -21,7 +21,7 @@ router.get('/getRoles', async(req, res) => {
     res.json(Tipo);
 });
 
-//OBTENER ROLES PARA INSERTAR
+//OBTENER DEPARTAMENTOS PARA INSERTAR
 router.get('/getDepartamentos', async(req, res) => {
     sql = "Select * From Departamento";
     let result = await dbConexion.Connection(sql, [], true);

@@ -1,11 +1,13 @@
 import { Link} from 'react-router-dom';
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useEffect, useState} from 'react';
+import { useEffect, useState,useContext} from 'react';
 import Axios from "axios";
 import Carrusel from "./Carrusel.js";
+import AuthContext from '../Context/UsuarioData.js';
 
 function Home() {
-  
+  const {user} = useContext(AuthContext);
+  console.log(user);
   const [puestos, setPuestos] = useState([]);
   const [puestos2, setPuestos2] = useState([]);
   
@@ -30,7 +32,20 @@ function Home() {
       }
 
 
-  
+      function redirection (tipo){
+        switch (tipo) {
+            case 1:
+                return `/Admin` 
+                break;
+            case 4:
+                return `/Revisor`
+                break;
+            
+            default:
+                return `/Login`
+                break;
+        }
+    }
 
  
   //const {user} = useContext(AuthContext)
@@ -101,6 +116,7 @@ function Home() {
         <Link to="/Login">
           <button className="btn btn-success">Login</button>
         </Link>
+        <Link className="nav-link" to={redirection(user.id_Tipo)}><button>Ir a Menu</button></Link>
       </div>
     </div>
   );

@@ -69,9 +69,14 @@ function FormularioAplicante() {
             }
           }).then((res)=>{
           console.log(res);
-          alert('GRACIAS POR APLICAR SE LE NOTIFICARA POR CORREO SU RESPUESTA');
-          setRedireccion(true);
-         
+          Axios.post("http://localhost:3001/Usuario/insertarRevision",{
+            dpi: values.DPI,
+            departamento: idDepartamento
+          }).then((res)=>{
+            alert('GRACIAS POR APLICAR SE LE NOTIFICARA POR CORREO SU RESPUESTA');
+            setRedireccion(true);
+          })
+          
         });
         
       } catch (ex) {
