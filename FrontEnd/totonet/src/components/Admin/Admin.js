@@ -41,7 +41,7 @@ const Submit = ()=>{
     }).then(()=>{
         alert('Usuario agregado con Exito');
     }).catch((e)=>{
-        console.log('No inserto');
+        alert('Usuario no Insertado');
     })
 }
 

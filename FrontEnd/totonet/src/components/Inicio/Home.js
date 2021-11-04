@@ -32,7 +32,7 @@ function Home() {
       }
 
 
-      function redirection (tipo){
+      function redirection (tipo,entrada){
         switch (tipo) {
             case 1:
                 return `/Admin` 
@@ -40,7 +40,13 @@ function Home() {
             case 4:
                 return `/Revisor`
                 break;
-            
+            case 5:
+              if(entrada == 0){
+                return `/Usuario`
+              }else{
+                return `/`
+              }    
+              break;
             default:
                 return `/Login`
                 break;
@@ -51,7 +57,19 @@ function Home() {
   //const {user} = useContext(AuthContext)
   return (
     <div className="container-app">
-      <div className="nav-container">{/* <Navbar/> */}</div>
+      <div className="nav-container">{/* <Navbar/> */}
+      <div>
+        <Link  to={redirection(user.id_Tipo,user.Entrada)}>
+          <button className="btn btn-primary">
+          Ir a Menu</button>
+        </Link>
+      </div>
+      <div>
+        <Link to="/Login">
+          <button className="btn btn-success">Login</button>
+        </Link>
+        </div>
+      </div>
       <div className="main-component">
         <div className="controls-carousel">
           <form>
@@ -112,12 +130,7 @@ function Home() {
         </div>
       </div>
       <Carrusel listaPuestos={puestos2}/>
-      <div>
-        <Link to="/Login">
-          <button className="btn btn-success">Login</button>
-        </Link>
-        <Link className="nav-link" to={redirection(user.id_Tipo)}><button>Ir a Menu</button></Link>
-      </div>
+     
     </div>
   );
 }

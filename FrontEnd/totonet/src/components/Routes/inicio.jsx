@@ -8,11 +8,10 @@ import InicioA from '../Admin/Inicio.js';
 import Login from '../Inicio/Login.js'
 import Home from '../Inicio/Home.js';
 import Reportes from '../Admin/Reportes.js';
-import Aplicacion from '../Usuario/Cargar.js';
 import Carga from '../Admin/Carga.js';
 import FormularioAplicante from '../Inicio/FormularioAplicante.js';
 import InicioR from '../Revisor/Inicio.js';
-import CV from '../Revisor/CV.js';
+import InicioU from '../Usuario/Inicio.js';
 //
 
 
@@ -25,11 +24,6 @@ function Rutas() {
                     <Home>
                         
                     </Home>
-                </Route>
-                <Route exact path="/Aplicacion">
-                    <Aplicacion>
-
-                    </Aplicacion>
                 </Route>
                 <RutaProtegida exact path="/Admin">
                     <InicioA>
@@ -61,10 +55,10 @@ function Rutas() {
                 <Route exact path="/Revisor">
                     <InicioR></InicioR>
                 </Route>
-                <Route exact path="/Revisor/CV">
-                    <CV>
+                <Route exact path="/Usuario">
+                    <InicioU>
 
-                    </CV>
+                    </InicioU>
                 </Route>
                 </AuthProvider>
             </Switch>

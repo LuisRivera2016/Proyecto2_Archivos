@@ -52,8 +52,8 @@ router.post('/insertar', async(req, res) => {
     // const hashPass = await bcrypt.hash(password,12,function(err,hash){
     //     passH = hash;
     // });
-    let sql = `INSERT INTO Usuario(Nombre,Password,Fecha_Creacion,Fecha_Fin,Estado,id_Tipo,id_Puesto,id_Departamento) 
-    VALUES('${usuario}','${password}',TO_DATE('${fecha.toLocaleDateString("en-US", fechaC)}','MM/DD/YYYY'),NULL,1,${tipo},NULL,${departamento})`;
+    let sql = `INSERT INTO Usuario(Nombre,Password,Fecha_Creacion,Fecha_Fin,Estado,id_Tipo,id_Puesto,id_Departamento,Entrada) 
+    VALUES('${usuario}','${password}',TO_DATE('${fecha.toLocaleDateString("en-US", fechaC)}','MM/DD/YYYY'),NULL,1,${tipo},NULL,${departamento},1)`;
     console.log(sql);                 
     
     try {
@@ -82,7 +82,7 @@ router.get('/getUsuarios', async(req, res) => {
             "Estado": us[5],
             "id_Tipo": us[6],
             "id_Puesto": us[7],
-            "tipo":us[10]
+            "tipo":us[11]
         }
         Usuario.push(UserSchema);
     })
@@ -109,18 +109,28 @@ router.put('/actualizarUsuarios', async(req, res) => {
     const usuario = req.body.id_Usuario;
     const nombre = req.body.Nombre;
     const estado = req.body.Estado;
+    console.log(req.body);
+
+    const tiempoTranscurrido = Date.now();
+        const hoy = new Date(tiempoTranscurrido);
+        var fechaC = hoy.toLocaleDateString();//21/10/2020
+        var fecha = new Date();
+        var fechaF = fecha.toLocaleDateString("en-US", fechaC);
+
     if(estado==1){
         sql = `UPDATE Usuario SET Nombre = '${nombre}',
             Estado = ${estado},
-            Fecha_Fin = NULL,
-            WHERE id_Usuario=${usuario}`;
+            Fecha_Fin = NULL
+            WHERE id_Usuario= ${usuario}`;
     }else{
         sql = `UPDATE Usuario SET Nombre = '${nombre}',
-            Estado = ${estado}
-            WHERE id_Usuario=${usuario}`;
+            Estado = ${estado},
+            Fecha_Fin = TO_DATE('${fechaF}','MM/DD/YYYY')
+            WHERE id_Usuario= ${usuario}`;
     }
     
     try {
+        console.log(sql);
         let result = await dbConexion.Connection(sql, [], true); 
     } catch (error) {
         console.log(error);

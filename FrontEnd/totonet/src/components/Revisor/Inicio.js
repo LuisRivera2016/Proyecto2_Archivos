@@ -5,13 +5,11 @@ import {Link} from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Modal,ModalBody,ModalHeader,ModalFooter} from 'reactstrap';
 import AuthContext from '../Context/UsuarioData.js';
-import CV  from '../Revisor/CV.js';
+
 
 function Inicio() {
     const {user} = useContext(AuthContext);
-    console.log(user);
     const [usuarios, setUsuarios] = useState([]);
-    const [verCV,setverCV] = useState(false);
     const [aplicanteSeleccionado, setaplicanteSeleccionado] = useState({
       id_Aplicante: '',
       Estado: '',
@@ -41,63 +39,38 @@ function Inicio() {
 
     const seleccionarAplicante = (user)=>{
         setaplicanteSeleccionado(user);
-        obtenerPDF(user.Curriculum);
-        //setverCV(true);
+        console.log('surriculumP: '+user.Curriculum);
+        obtenerPDF(user.id_Aplicante);
+
     }
 
-    const obtenerPDF = (url)=>{
-        Axios.get(`${url}`,{
-        }).then((usuarios)=>{
-            console.log(usuarios);
-        }).catch((err)=>{
+    const obtenerPDF = async(url)=>{
+        Axios.get(`http://localhost:3001/getDocumento/${url}`,{
+            responseType: "blob"
+
+    }).then(response=>{
+            const file = new Blob([response.data],{
+                type: "application/pdf"
+            });
+            const fileURL = URL.createObjectURL(file);
+            window.open(fileURL);
+        }).catch(err=>{
             console.log(err)
         });
     }
 
-    const CambiarEstado = (id)=>{
-        const tiempoTranscurrido = Date.now();
-        const hoy = new Date(tiempoTranscurrido);
-        var fechaC = hoy.toLocaleDateString();//21/10/2020
-        var fecha = new Date();
-        var fechaF = fecha.toLocaleDateString("en-US", fechaC);
-
-        Axios.put("http://localhost:3001/Admin/eliminarUsuarios",{
-            id_Usuario: id,
-            fecha_fin: fechaF
-        }).then((e)=>{
-            console.log('Se elimino')
-        }).catch((err)=>{
-            console.log('No se elimino');
-        }); 
-    }
-
-    // const handleChange=e=>{
-    //     const {name, value}=e.target;
-    //     setusuarioSeleccionado((prevState)=>({
-    //       ...prevState,
-    //       [name]: value
-    //     }));
-    //   }
-
-      // const editar=()=>{
-      //   var dataNueva=usuarios;
-      //   dataNueva.map(user=>{
-      //     if (user.id_Usuario === usuarioSeleccionado.id_Usuario) {
-      //       Axios.put("http://localhost:3001/Admin/actualizarUsuarios", {
-      //         id_Usuario: usuarioSeleccionado.id_Usuario,  
-      //         Nombre: aplicanteSeleccionado.Nombre,
-      //         Estado: aplicanteSeleccionado.Apellido
-      //       })
-      //         .then((e) => {
-      //           console.log("Se elimino");
-      //         })
-      //         .catch((err) => {
-      //           console.log("No se elimino");
-      //         });
-      //     }
-      //   });
-      //   setModalCV(false);
-      // }  
+    
+      const aceptarA=(aplicante)=>{
+            Axios.post("http://localhost:3001/Revisor/aprobarAplicante", {
+              id_Aplicante: aplicante
+            })
+              .then((e) => {
+                alert("Se Acepto el Aplicante");
+              })
+              .catch((err) => {
+                alert("No se pudo Aceptar el Aplicante");
+              });
+      };  
 
     return (
         <div>
@@ -127,16 +100,17 @@ function Inicio() {
                                 <td>{index.Id_Puesto}</td>
                                 <td>
                                     <button className="btn btn-danger" onClick={()=>{
-                                        CambiarEstado(index.id_Aplicante);
+                                        aceptarA(index.id_Aplicante);
                                     }}>Aceptar Aplicante</button>{"  "}
-                                    <button className="btn btn-primary"  onClick={()=>seleccionarAplicante(index)}>Ver CV</button>
+                                    <button className="btn btn-primary"  onClick={()=>seleccionarAplicante(index)}>Ver CV</button>{" "}
+                                    <button className="btn btn-success">Ver Expedientes</button>
                                 </td>
                             </tr>)
                     })} 
             </tbody>
         </table>
-        {verCV ? <CV curr={aplicanteSeleccionado.Curriculum}/>:undefined}
-        <button onClick={()=>{setverCV(false)}}>Cerrar</button>
+       
+        
         <br/>
             <Link to="/">
             <button className="btn btn-success">Salir

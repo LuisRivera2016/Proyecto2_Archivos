@@ -72,3 +72,14 @@
 .container-carousel .buttons button:first-child img {
   transform: rotate(180deg);
 }
+
+.nav-container{
+  display: flex;
+  background-color:teal;
+  justify-content: flex-end;
+  padding: 5px;
+}
+
+.nav-container div{
+  margin: 5px;
+}

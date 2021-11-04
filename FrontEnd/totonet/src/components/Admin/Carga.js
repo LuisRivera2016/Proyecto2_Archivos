@@ -14,7 +14,7 @@ function Carga() {
       setFile(e.target.files[0]);
       setFileName(e.target.files[0].name);;
     };
-  ;
+  
 
     const uploadFile = async (e) => {
       const formData = new FormData();

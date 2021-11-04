@@ -18,7 +18,8 @@ function Inicio() {
         id_Tipo: '',
         id_Puesto: '' ,
         id_Departamento: '',
-        tipo:''
+        tipo:'',
+        Entrada:''
       });
 
     useEffect(()=>{
@@ -46,9 +47,9 @@ function Inicio() {
             id_Usuario: id,
             fecha_fin: fechaF
         }).then((e)=>{
-            console.log('Se elimino')
+            alert('Se Elimino el Usuario')
         }).catch((err)=>{
-            console.log('No se elimino');
+            alert('No se Elimino el Usuario');
         }); 
     }
 
@@ -70,10 +71,10 @@ function Inicio() {
               Estado: usuarioSeleccionado.Estado
             })
               .then((e) => {
-                console.log("Se elimino");
+                alert("Se Actualizo el Usuario");
               })
               .catch((err) => {
-                console.log("No se elimino");
+                alert("No se Actualizo el Usuario");
               });
           }
         });

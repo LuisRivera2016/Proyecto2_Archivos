@@ -30,7 +30,6 @@ app.use(express.static("files"));
 app.use(express.json({limit: '500mb'}));
 app.use(express.urlencoded({limit: '500mb'}));
 app.use(express.json());
-app.use('/',prueba);//rutas
 app.use('/Admin',admin);//admin
 app.use('/Usuario',userR);//user
 app.use('/Revisor',revisorR);//revisor
@@ -534,6 +533,59 @@ app.post("/aplicar", async(req, res) => {
 
 
 //--------------------------------------------------------
+//OBTENER DOCUMENTO
+app.get('/getDocumento/:idAplicante',async(req,res)=>{
+    const path = req.params.idAplicante;
+    let cv = {};
+    let  sql = `SELECT CV FROM Aplicante WHERE id_Aplicante=${path}`;
+    let result = await dbConexion.Connection(sql, [], true);
+    result.rows.map((us)=>{
+        cv = {
+          CV: us[0]
+        }
+    }) 
+    console.log(cv.CV);
+    var documento = fs.createReadStream(cv.CV);
+    documento.pipe(res);
+  });
+//-------------------------------------------------------------------
+//INSERTAR REQUERIMIENTOS
+app.post('/insertarRequisitos', async (req, res) => {
+    const newpath = __dirname + "/files/";
+    const idUsuario = req.body.idUsuario;
+    const Aplicante = req.body.Aplicante;
+    const Requisito = req.body.Requisito;
+    console.log('req '+Requisito);
+    const fileR = req.files.file;
+    var fileName = fileR.name;
+    const fileSize = fileR.size;
+    const extension = getFileExtension(fileName);
+    const peso = fileSize/1048576;
+    const nombreRequisito = `${Requisito}-${Aplicante}.${extension}`;
+    req.files.file.name = nombreRequisito;
+    fileName =  req.files.file.name;
+    const ruta = newpath+fileName;
+
+    fileR.mv(`${newpath}${fileName}`, (err) => {
+      if (err) {
+        res.status(500).send({ message: "File upload failed", code: 200 });
+      } 
+    });
+        let sql = `INSERT INTO Usuario_Requisito(Nombre,Tamano,Formato,Archivo,Estado,Motivo,Fecha_Rechazo,id_Usuario,DPI) 
+        VALUES('${fileName}',${peso},'${extension}','${ruta}',0,'',NULL,${idUsuario},${Aplicante})`;
+    console.log(sql);                 
+
+        try {
+        let result = await dbConexion.Connection(sql, [], true);
+        } catch (error) {
+        console.log(error);
+        }finally{
+        res.status(200).send({ message: "Se Guardo el Archivo", code: 200 });
+        }
+   
+  });
+
+//---------------------------------------------------------------------
 const port = process.env.PORT || 3001;
 
 app.listen(port,()=>{

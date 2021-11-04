@@ -2,6 +2,8 @@ const express = require("express");
 const dbConexion = require("../database");
 const router = express.Router();
 const bcrypt = require("bcrypt");
+const { Router } = require("express");
+
 //REGISTRAR APLICANTE A PUESTO
 router.post("/aplicar", async (req, res) => {
   const newpath = __dirname + "/files/";
@@ -29,15 +31,7 @@ router.post("/aplicar", async (req, res) => {
       res.status(500).send({ message: "File upload failed", code: 200 });
     }
   });
-  // let sql = `INSERT INTO Aplicante_Documentos(Nombre,Tamano,Formato,Archivo,id_Aplicante)
-  // VALUES('${filename}',${peso},${extension},${cadena64},NULL)`;
-  // console.log(sql);
-
-  // try {
-  //     let result = await dbConexion.Connection(sql, [], true);
-  // } catch (error) {
-  //     console.log(error);
-  // }
+ 
   res.status(200).send({ message: "Se envio", code: 200 });
 });
 
@@ -73,17 +67,16 @@ router.post("/insertCalificacion", async (req, res) => {
   //console.log(req.body);
   const idPuesto = req.body.Puesto;
   const calificacion = req.body.Calificacion;
-  
+
   var sql = ``;
   sql = `INSERT INTO Puesto_Calificacion(id_Puesto,Calificacion) VALUES(${idPuesto},${calificacion})`;
   console.log(sql);
   try {
     let result = await dbConexion.Connection(sql, [], true);
-
   } catch (error) {
     console.log(error);
   }
-  res.status(200).send({status: 200,message:`Insert`});
+  res.status(200).send({ status: 200, message: `Insert` });
 });
 
 //INSERTAR REVISION
@@ -106,12 +99,12 @@ router.post("/insertarRevision", async (req, res) => {
     resultUsuarioD = await dbConexion.Connection(sqlU, [], true);
   } catch (error) {
     console.log(error);
-  }finally{
-    if(resultUsuarioD.rows != 0){
+  } finally {
+    if (resultUsuarioD.rows != 0) {
       //OBTENER APLICANTE
       resultUsuarioD.rows.map((us) => {
         usuario = {
-          id_Usuario: us[0]
+          id_Usuario: us[0],
         };
       });
       let sql = `SELECT Id_Aplicante FROM APlicante WHERE DPI= ${DPI}`;
@@ -120,27 +113,25 @@ router.post("/insertarRevision", async (req, res) => {
         resultAPlicante = await dbConexion.Connection(sql, [], true);
       } catch (error) {
         console.log(error);
-      }finally{
-        resultAPlicante.rows.map((us)=>{
+      } finally {
+        resultAPlicante.rows.map((us) => {
           aplicante = {
-            id_Aplicante: us[0]
-          }
-        })
+            id_Aplicante: us[0],
+          };
+        });
         //INSERTAR REVISION
         let sql4 = `INSERT INTO Revision(Estado_Revision,id_Usuario,Id_Aplicante) 
                       VALUES(0,${usuario.id_Usuario},${aplicante.id_Aplicante})`;
-          console.log('INSERT R: '+sql4);
-          try {
-            let resultF = await dbConexion.Connection(sql4, [], true);
-          } catch (error) {
-            console.log(error);
-          }finally{
-            res.status(200).send({ message: "Se Inserto", code: 200 });
-          }
-
+        console.log("INSERT R: " + sql4);
+        try {
+          let resultF = await dbConexion.Connection(sql4, [], true);
+        } catch (error) {
+          console.log(error);
+        } finally {
+          res.status(200).send({ message: "Se Inserto", code: 200 });
+        }
       }
-
-    }else{
+    } else {
       let sql2 = `SELECT conteo.Id_Usuario FROM (SELECT Id_Usuario,COUNT(Id_Usuario)as cont FROM Revision
   GROUP BY Id_Usuario)conteo
   INNER JOIN USUARIO ON USUARIO.Id_Usuario = conteo.Id_Usuario
@@ -149,104 +140,136 @@ router.post("/insertarRevision", async (req, res) => {
   SELECT Id_Usuario,COUNT(Id_Usuario)as cont FROM Revision
   GROUP BY Id_Usuario)conteo)
   AND USUARIO.Id_Departamento = ${idDepartamento}`;
-  console.log(sql2);
+      console.log(sql2);
 
-  try {
-    resultUsuario = await dbConexion.Connection(sql2, [], true);
-  } catch (error) {
-    console.log(error);
-  } finally {
-    if (resultUsuario.rows == 0) {
-      console.log("NO hay revisiones");
-      let sql3 = `SELECT Id_Usuario FROM Usuario WHERE id_Departamento = ${idDepartamento} 
+      try {
+        resultUsuario = await dbConexion.Connection(sql2, [], true);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        if (resultUsuario.rows == 0) {
+          console.log("NO hay revisiones");
+          let sql3 = `SELECT Id_Usuario FROM Usuario WHERE id_Departamento = ${idDepartamento} 
                       AND id_Tipo = 4 AND ROWNUM  = 1`;
-      
-      try {
-        resultUsuario2 = await dbConexion.Connection(sql3, [], true);
-      } catch (error) {
-        console.log(error);
-      }finally{
-        //OBTENER APLICANTE 
-        resultUsuario2.rows.map((us) => {
-           usuario = {
-            id_Usuario: us[0]
-          };
-        });
-        let sql = `SELECT Id_Aplicante FROM APlicante WHERE DPI= ${DPI}`;
-        try {
-          console.log(sql);
-          resultAPlicante = await dbConexion.Connection(sql, [], true);
-        } catch (error) {
-          console.log(error);
-        }finally{
-          resultAPlicante.rows.map((us)=>{
-            aplicante = {
-              id_Aplicante: us[0]
+
+          try {
+            resultUsuario2 = await dbConexion.Connection(sql3, [], true);
+          } catch (error) {
+            console.log(error);
+          } finally {
+            //OBTENER APLICANTE
+            resultUsuario2.rows.map((us) => {
+              usuario = {
+                id_Usuario: us[0],
+              };
+            });
+            let sql = `SELECT Id_Aplicante FROM APlicante WHERE DPI= ${DPI}`;
+            try {
+              console.log(sql);
+              resultAPlicante = await dbConexion.Connection(sql, [], true);
+            } catch (error) {
+              console.log(error);
+            } finally {
+              resultAPlicante.rows.map((us) => {
+                aplicante = {
+                  id_Aplicante: us[0],
+                };
+              });
+              //INSERTAR REVISION
+
+              let sql4 = `INSERT INTO Revision(Estado_Revision,id_Usuario,Id_Aplicante) 
+                      VALUES(0,${usuario.id_Usuario},${aplicante.id_Aplicante})`;
+              console.log("INSERT R: " + sql4);
+              try {
+                let resultF = await dbConexion.Connection(sql4, [], true);
+              } catch (error) {
+                console.log(error);
+              } finally {
+                res.status(200).send({ message: "Se Inserto", code: 200 });
+              }
+              //SE INSERTO
             }
-          })
-          //INSERTAR REVISION
-
-          let sql4 = `INSERT INTO Revision(Estado_Revision,id_Usuario,Id_Aplicante) 
-                      VALUES(0,${usuario.id_Usuario},${aplicante.id_Aplicante})`;
-          console.log('INSERT R: '+sql4);
+          }
+        } else {
+          //OBTENER APLICANTE
+          resultUsuario.rows.map((us) => {
+            usuario = {
+              id_Usuario: us[0],
+            };
+          });
+          let sql = `SELECT Id_Aplicante FROM APlicante WHERE DPI= ${DPI}`;
           try {
-            let resultF = await dbConexion.Connection(sql4, [], true);
+            console.log(sql);
+            resultAPlicante = await dbConexion.Connection(sql, [], true);
           } catch (error) {
             console.log(error);
-          }finally{
-            res.status(200).send({ message: "Se Inserto", code: 200 });
+          } finally {
+            resultAPlicante.rows.map((us) => {
+              aplicante = {
+                id_Aplicante: us[0],
+              };
+            });
+            //INSERTAR REVISION
+            let sql4 = `INSERT INTO Revision(Estado_Revision,id_Usuario,Id_Aplicante) 
+                      VALUES(0,${usuario.id_Usuario},${aplicante.id_Aplicante})`;
+            console.log("INSERT R: " + sql4);
+            try {
+              let resultF = await dbConexion.Connection(sql4, [], true);
+            } catch (error) {
+              console.log(error);
+            } finally {
+              res.status(200).send({ message: "Se Inserto", code: 200 });
+            }
           }
-          //SE INSERTO
 
+          //
         }
-
-        
       }
-
-
-    } else {
-      //OBTENER APLICANTE
-      resultUsuario.rows.map((us) => {
-        usuario = {
-          id_Usuario: us[0]
-        };
-      });
-      let sql = `SELECT Id_Aplicante FROM APlicante WHERE DPI= ${DPI}`;
-      try {
-        console.log(sql);
-        resultAPlicante = await dbConexion.Connection(sql, [], true);
-      } catch (error) {
-        console.log(error);
-      }finally{
-        resultAPlicante.rows.map((us)=>{
-          aplicante = {
-            id_Aplicante: us[0]
-          }
-        })
-        //INSERTAR REVISION
-        let sql4 = `INSERT INTO Revision(Estado_Revision,id_Usuario,Id_Aplicante) 
-                      VALUES(0,${usuario.id_Usuario},${aplicante.id_Aplicante})`;
-          console.log('INSERT R: '+sql4);
-          try {
-            let resultF = await dbConexion.Connection(sql4, [], true);
-          } catch (error) {
-            console.log(error);
-          }finally{
-            res.status(200).send({ message: "Se Inserto", code: 200 });
-          }
-
-      }
-
-      //
-    }
-  }
     }
   }
 
   //
-  
+});
 
-  
+//OBTENER REQUISITOS
+router.get("/getRequisitos/:nombre", async (req, res) => {
+  const aplicante = req.params.nombre;
+  let idpuesto = {};
+  let puestos = {};
+  let resultP;
+  let resultP2;
+  //OBTENER PUESTOS
+  let sql = `SELECT Id_Puesto FROM Aplicante WHERE DPI=${aplicante}`;
+  try {
+    resultP = await dbConexion.Connection(sql, [], true);
+  } catch (error) {
+    console.log(error);
+  } finally {
+    resultP.rows.map((us) => {
+      idpuesto = {
+        id_Puesto: us[0],
+      };
+    });
+    //OBTENER REQUISITOS
+    let sql2 = `SELECT Requisito.Nombre FROM Requisito INNER JOIN Puesto_Requisito ON 
+                  Requisito.Id_Requisito = Puesto_Requisito.Id_Requisito 
+                  WHERE Puesto_Requisito.Id_Puesto = ${idpuesto.id_Puesto}
+                  GROUP BY Puesto_Requisito.ID_REQUISITO,Requisito.Nombre`;
+    try {
+      resultP2 = await dbConexion.Connection(sql2, [], true);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      Requisitos = [];
+      resultP2.rows.map((us) => {
+        puestos = {
+          Requisito: us[0],
+        };
+        Requisitos.push(puestos);
+      });
+      res.json(Requisitos);
+    }
+  }
 });
 
 module.exports = router;

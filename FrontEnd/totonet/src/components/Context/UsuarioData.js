@@ -22,8 +22,10 @@ const AuthProvider = ({children})=>{
      }).then((res)=>{
             Cookies.set("refreshToken",res.data.refreshToken);
             setUser(res.data);
+            alert('Login Exitoso');
             setRedirectC(true);
      }).catch((err)=>{
+         alert('No existe el Usuario o Datos Incorrectos');
          console.log(err)
      });
   };
