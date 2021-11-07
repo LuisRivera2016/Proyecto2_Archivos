@@ -41,10 +41,10 @@ router.get("/getUsuarios/:idUser", async (req, res) => {
         Telefono: us[7],
         Entrada: us[8],
         Curriculum: us[9],
-        Id_Puesto: us[11],
-        Id_Revision: us[12],
-        Estado_Revision: us[13],
-        Id_Usuario: us[14],
+        Id_Puesto: us[10],
+        Id_Revision: us[11],
+        Estado_Revision: us[12],
+        Id_Usuario: us[13],
       };
       Usuario.push(UserSchema);
     });

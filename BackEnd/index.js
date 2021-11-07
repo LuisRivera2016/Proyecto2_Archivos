@@ -548,6 +548,29 @@ app.get('/getDocumento/:idAplicante',async(req,res)=>{
     var documento = fs.createReadStream(cv.CV);
     documento.pipe(res);
   });
+//OBTENER REQUERIMIENTOS
+  app.get('/getDocumento2/:requisito/:dpi',async(req,res)=>{
+    const requisito = req.params.requisito;
+    const dp = req.params.dpi;
+    let cv = {};
+    let puestos = {};
+    let result;
+  console.log('dpi: '+dp+' Requisito: '+requisito);
+  //OBTENER FORMATOS
+    let sql2 = `SELECT ARCHIVO FROM USUARIO_REQUISITO 
+    WHERE DPI = ${dp} AND NOMBRE LIKE '${requisito}%'
+    AND ROWNUM = 1`;
+     result = await dbConexion.Connection(sql2, [], true);
+    result.rows.map((us)=>{
+        cv = {
+          Archivo: us[0]
+        }
+    }) 
+    console.log(cv.Archivo);
+    var documento = fs.createReadStream(cv.Archivo);
+    documento.pipe(res);
+  });
+
 //-------------------------------------------------------------------
 //INSERTAR REQUERIMIENTOS
 app.post('/insertarRequisitos', async (req, res) => {

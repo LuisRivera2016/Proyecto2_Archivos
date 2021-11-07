@@ -251,10 +251,10 @@ router.get("/getRequisitos/:nombre", async (req, res) => {
       };
     });
     //OBTENER REQUISITOS
-    let sql2 = `SELECT Requisito.Nombre FROM Requisito INNER JOIN Puesto_Requisito ON 
+    let sql2 = `SELECT Requisito.Nombre,Requisito.Tamano,Requisito.Obligatorio FROM Requisito INNER JOIN Puesto_Requisito ON 
                   Requisito.Id_Requisito = Puesto_Requisito.Id_Requisito 
                   WHERE Puesto_Requisito.Id_Puesto = ${idpuesto.id_Puesto}
-                  GROUP BY Puesto_Requisito.ID_REQUISITO,Requisito.Nombre`;
+                  GROUP BY Puesto_Requisito.ID_REQUISITO,Requisito.Nombre,REQUISITO.TAMANO,REQUISITO.OBLIGATORIO`;
     try {
       resultP2 = await dbConexion.Connection(sql2, [], true);
     } catch (error) {
@@ -264,11 +264,112 @@ router.get("/getRequisitos/:nombre", async (req, res) => {
       resultP2.rows.map((us) => {
         puestos = {
           Requisito: us[0],
+          Tamano: us[1],
+          Obligatorio: us[2]
         };
         Requisitos.push(puestos);
       });
       res.json(Requisitos);
     }
+  }
+});
+
+//OBTENER FORMATOS
+router.get("/getFormatos/:requisito/:idPuesto", async (req, res) => {
+  const requisito = req.params.requisito;
+  const puesto = req.params.idPuesto;
+  let idpuesto = {};
+  let puestos = {};
+  let resultP2;
+  console.log('idPuesto: '+puesto+' Requisito: '+requisito);
+  //OBTENER FORMATOS
+    let sql2 = `SELECT FORMATO.NOMBRE FROM FORMATO
+    INNER JOIN REQUISITO_FORMATO ON FORMATO.ID_FORMATO = REQUISITO_FORMATO.ID_FORMATO
+    INNER JOIN REQUISITO ON REQUISITO_FORMATO.ID_REQUISITO = REQUISITO.ID_REQUISITO
+    INNER JOIN PUESTO_REQUISITO ON REQUISITO.ID_REQUISITO = PUESTO_REQUISITO.ID_REQUISITO
+    WHERE PUESTO_REQUISITO.ID_PUESTO = ${puesto} AND REQUISITO.NOMBRE = '${requisito}'
+    GROUP BY Puesto_Requisito.ID_REQUISITO,REQUISITO_FORMATO.ID_FORMATO,FORMATO.NOMBRE`;
+
+    try {
+      resultP2 = await dbConexion.Connection(sql2, [], true);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      Formatos = [];
+      resultP2.rows.map((us) => {
+        puestos = {
+          Formato: us[0]
+        };
+        Formatos.push(puestos);
+      });
+      res.json(Formatos);
+    }
+  
+});
+//OBTENER DATOSDOCUMENTO FALLA
+router.get("/getDatosDoc/:requisito/:dpi", async (req, res) => {
+  const requisito = req.params.requisito;
+  const dpi = req.params.dpi;
+  let archivoD = {};
+  let resultP2;
+  console.log('requisito: '+requisito+' dpi: '+dpi);
+  //OBTENER FORMATOS
+    let sql2 = `SELECT TAMANO,FORMATO FROM USUARIO_REQUISITO 
+    WHERE DPI = ${dpi} AND NOMBRE LIKE '${requisito}%' AND ROWNUM = 1`;
+    console.log(sql2);
+    try {
+      resultP2 = await dbConexion.Connection(sql2, [], true);
+      resultP2.rows.map((us) => {
+         archivoD = {
+           Tamano: us[0],
+           Formato: us[1]
+         };
+       });
+       console.log(archivoD);
+       res.json(archivoD);
+    } catch (error) {
+      console.log(error);
+    } 
+  
+});
+
+//APROBAR DOCUMENTO
+router.put("/aprobarDoc", async (req, res) => {
+  //console.log(req.body);
+  const requisito = req.body.requisito;
+  const dpi = req.body.dpi;
+
+  var sql = ``;
+  sql = `UPDATE USUARIO_REQUISITO SET
+  Estado = 1
+  WHERE NOMBRE LIKE '${requisito}%' AND DPI =  ${dpi}`;
+  console.log(sql);
+  try {
+    let result = await dbConexion.Connection(sql, [], true);
+    res.status(200).send({ status: 200, message: `Se Actualizo` });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+//DESAPROBAR DOCUMENTO
+router.put("/desaprobarDoc", async (req, res) => {
+  //console.log(req.body);
+  const requisito = req.body.requisito;
+  const dpi = req.body.dpi;
+  const motivo = req.body.motivo;
+
+  var sql = ``;
+  sql = `UPDATE USUARIO_REQUISITO SET
+  Estado = 2,
+  Motivo = '${motivo}'
+  WHERE NOMBRE LIKE '${requisito}%' AND DPI =  ${dpi}`;
+  console.log(sql);
+  try {
+    let result = await dbConexion.Connection(sql, [], true);
+    res.status(200).send({ status: 200, message: `Se Actualizo` });
+  } catch (error) {
+    console.log(error);
   }
 });
 

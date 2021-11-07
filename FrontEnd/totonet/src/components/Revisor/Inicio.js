@@ -103,7 +103,7 @@ function Inicio() {
                                         aceptarA(index.id_Aplicante);
                                     }}>Aceptar Aplicante</button>{"  "}
                                     <button className="btn btn-primary"  onClick={()=>seleccionarAplicante(index)}>Ver CV</button>{" "}
-                                    <button className="btn btn-success">Ver Expedientes</button>
+                                    <Link to={`/Revisor/Requisitos/${index.Id_Puesto}/${index.DPI}`}><button className="btn btn-success">Ver Expedientes</button></Link>
                                 </td>
                             </tr>)
                     })} 

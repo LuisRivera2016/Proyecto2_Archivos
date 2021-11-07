@@ -7,7 +7,7 @@ import AuthContext from '../Context/UsuarioData.js';
 
 function Home() {
   const {user} = useContext(AuthContext);
-  console.log(user);
+  console.log('Usuario '+user);
   const [puestos, setPuestos] = useState([]);
   const [puestos2, setPuestos2] = useState([]);
   
@@ -41,7 +41,7 @@ function Home() {
                 return `/Revisor`
                 break;
             case 5:
-              if(entrada == 0){
+              if(entrada === 0){
                 return `/Usuario`
               }else{
                 return `/`

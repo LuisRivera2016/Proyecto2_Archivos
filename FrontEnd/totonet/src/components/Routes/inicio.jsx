@@ -12,6 +12,7 @@ import Carga from '../Admin/Carga.js';
 import FormularioAplicante from '../Inicio/FormularioAplicante.js';
 import InicioR from '../Revisor/Inicio.js';
 import InicioU from '../Usuario/Inicio.js';
+import Requisitos from '../Revisor/Requisitos.js';
 //
 
 
@@ -59,6 +60,9 @@ function Rutas() {
                     <InicioU>
 
                     </InicioU>
+                </Route>
+                <Route exact path="/Revisor/Requisitos/:idPuesto/:dpi">
+                    <Requisitos></Requisitos>
                 </Route>
                 </AuthProvider>
             </Switch>
