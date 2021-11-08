@@ -69,7 +69,8 @@ app.post('/Login',async(req,res)=>{
                     "Estado": index[5],
                     "id_Tipo":index[6],
                     "id_Puesto":index[7],
-                    "id_Departamento":index[8]
+                    "id_Departamento":index[8],
+                    "Entrada":index[9]
                 }
               
             })
@@ -604,6 +605,52 @@ app.post('/insertarRequisitos', async (req, res) => {
         console.log(error);
         }finally{
         res.status(200).send({ message: "Se Guardo el Archivo", code: 200 });
+        }
+   
+  });
+
+//---------------------------ACTUALIZAR REQUISITOS
+app.put('/actualizarRequisitos', async (req, res) => {
+    const newpath = __dirname + "/files/";
+    const idUsuario = req.body.idUsuario;
+    const Aplicante = req.body.Aplicante;
+    const Requisito = req.body.Requisito;
+    const varSepara = Requisito.split("-");
+    const varRequisito = varSepara[0];
+    console.log('req '+Requisito);
+    const fileR = req.files.file;
+    var fileName = fileR.name;
+    const fileSize = fileR.size;
+    const extension = getFileExtension(fileName);
+    const peso = fileSize/1048576;
+    const nombreRequisito = `${varRequisito}-${Aplicante}.${extension}`;
+    req.files.file.name = nombreRequisito;
+    fileName =  req.files.file.name;
+    const ruta = newpath+fileName;
+
+    fileR.mv(`${newpath}${fileName}`, (err) => {
+      if (err) {
+        res.status(500).send({ message: "File upload failed", code: 200 });
+      } 
+    });        
+        let sql = `UPDATE USUARIO_REQUISITO SET
+        Estado = 0,
+        Fecha_Rechazo = NULL,
+        Nombre = '${fileName}',
+        Tamano = ${peso},
+        Formato = '${extension}',
+        Archivo = '${ruta}',
+        Motivo = ''
+        WHERE id_Usuario = ${idUsuario} AND DPI=${Aplicante}`;
+
+        console.log(sql); 
+
+        try {
+         let result = await dbConexion.Connection(sql, [], true);
+        } catch (error) {
+        console.log(error);
+        }finally{
+        res.status(200).send({ message: "Se Actualizo el Archivo", code: 200 });
         }
    
   });

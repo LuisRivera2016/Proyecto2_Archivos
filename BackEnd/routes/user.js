@@ -358,12 +358,65 @@ router.put("/desaprobarDoc", async (req, res) => {
   const requisito = req.body.requisito;
   const dpi = req.body.dpi;
   const motivo = req.body.motivo;
+  const tiempoTranscurrido = Date.now();
+  const hoy = new Date(tiempoTranscurrido);
+  var fechaC = hoy.toLocaleDateString();//21/10/2020
+  var fecha = new Date();
+
 
   var sql = ``;
   sql = `UPDATE USUARIO_REQUISITO SET
   Estado = 2,
+  Fecha_Rechazo = TO_DATE('${fecha.toLocaleDateString("en-US", fechaC)}','MM/DD/YYYY'),
   Motivo = '${motivo}'
   WHERE NOMBRE LIKE '${requisito}%' AND DPI =  ${dpi}`;
+  console.log(sql);
+  try {
+    let result = await dbConexion.Connection(sql, [], true);
+    res.status(200).send({ status: 200, message: `Se Actualizo` });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+//GET REQUISITOS DESAPROBADOS
+router.get("/getDesaprobados/:nombre", async (req, res) => {
+  const aplicante = req.params.nombre;
+  let docR= {};
+  let resultP;
+  let resultP2;
+  //OBTENER PUESTOS
+  let sql = `SELECT Nombre,Motivo,Fecha_Rechazo FROM USUARIO_REQUISITO WHERE ESTADO = 2 AND DPI = ${aplicante}`;
+  try {
+    resultP = await dbConexion.Connection(sql, [], true);
+  } catch (error) {
+    console.log(error);
+  } finally {
+    Documentos = [];
+    resultP.rows.map((us) => {
+      docR = {
+        Documento: us[0],
+        Motivo: us[1],
+        Fecha: us[2]
+      };
+      Documentos.push(docR);
+    });
+    // //OBTENER REQUISITOS
+    res.json(Documentos);
+   
+  }
+});
+
+//ACTUALIZAR ENTRADA
+router.put("/actualizarEntrada/:dpi", async (req, res) => {
+  //console.log(req.body);
+  const dpi = req.params.dpi;
+
+
+  var sql = ``;
+  sql = `UPDATE USUARIO SET
+  Entrada = 1
+  WHERE Nombre =  '${dpi}'`;
   console.log(sql);
   try {
     let result = await dbConexion.Connection(sql, [], true);

@@ -82,8 +82,27 @@ function Inicio() {
       }  
 
     return (
+      <div className="container-app">
+      <div className="nav-container">{/* <Navbar/> */}
+      <Link to="/Admin/Form">
+            <button className="btn btn-success">Agregar
+            </button>
+            </Link>{"  "}
+            <Link to="/">
+            <button className="btn btn-success">Salir
+            </button>
+            </Link>{"  "}
+            <Link to="/Admin/Reportes">
+            <button className="btn btn-success">Organigrama
+            </button>
+            </Link>
+            <Link to="/Admin/Top">
+            <button className="btn btn-success">Top Invitaciones
+            </button>
+            </Link>
+      </div>
+
         <div>
-           
 
             <table className="table table-bordered">
                 <thead>
@@ -169,18 +188,8 @@ function Inicio() {
               
 
         <br/>
-            <Link to="/Admin/Form">
-            <button className="btn btn-success">Agregar
-            </button>
-            </Link><br/><br/>
-            <Link to="/">
-            <button className="btn btn-success">Salir
-            </button>
-            </Link><br/><br/>
-            <Link to="/Admin/Reportes">
-            <button className="btn btn-success">Reportes
-            </button>
-            </Link>
+           
+        </div>
         </div>
     )
 }

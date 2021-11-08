@@ -13,6 +13,7 @@ import FormularioAplicante from '../Inicio/FormularioAplicante.js';
 import InicioR from '../Revisor/Inicio.js';
 import InicioU from '../Usuario/Inicio.js';
 import Requisitos from '../Revisor/Requisitos.js';
+import Usuario2 from '../Usuario/Inicio2.js';
 //
 
 
@@ -63,6 +64,9 @@ function Rutas() {
                 </Route>
                 <Route exact path="/Revisor/Requisitos/:idPuesto/:dpi">
                     <Requisitos></Requisitos>
+                </Route>
+                <Route exact path="/Usuario2">
+                    <Usuario2></Usuario2>
                 </Route>
                 </AuthProvider>
             </Switch>

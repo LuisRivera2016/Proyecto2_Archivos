@@ -7,7 +7,7 @@ import AuthContext from '../Context/UsuarioData.js';
 
 function Home() {
   const {user} = useContext(AuthContext);
-  console.log('Usuario '+user);
+  console.log('Usuario '+user.id_Tipo);
   const [puestos, setPuestos] = useState([]);
   const [puestos2, setPuestos2] = useState([]);
   
@@ -41,11 +41,12 @@ function Home() {
                 return `/Revisor`
                 break;
             case 5:
+              console.log('Entrada: '+entrada);
               if(entrada === 0){
                 return `/Usuario`
               }else{
-                return `/`
-              }    
+                return `/Usuario2`
+              }
               break;
             default:
                 return `/Login`
@@ -56,7 +57,9 @@ function Home() {
  
   //const {user} = useContext(AuthContext)
   return (
+      
     <div className="container-app">
+      {console.log('Render')}
       <div className="nav-container">{/* <Navbar/> */}
       <div>
         <Link  to={redirection(user.id_Tipo,user.Entrada)}>
