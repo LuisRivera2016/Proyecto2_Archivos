@@ -7,13 +7,15 @@ import Admin from "../Admin/Admin.js"
 import InicioA from '../Admin/Inicio.js';
 import Login from '../Inicio/Login.js'
 import Home from '../Inicio/Home.js';
-import Reportes from '../Admin/Reportes.js';
+import Organigrama from '../Admin/Organigrama.js';
 import Carga from '../Admin/Carga.js';
 import FormularioAplicante from '../Inicio/FormularioAplicante.js';
 import InicioR from '../Revisor/Inicio.js';
 import InicioU from '../Usuario/Inicio.js';
 import Requisitos from '../Revisor/Requisitos.js';
 import Usuario2 from '../Usuario/Inicio2.js';
+import InicioRe from '../Reclutador/Inicio.js';
+import Reportes from '../Admin/reportes.js';
 //
 
 
@@ -45,11 +47,9 @@ function Rutas() {
                     <Login> 
                     </Login>
                 </Route>
-                <RutaProtegida exact path="/Admin/Reportes">
-                    <Reportes>
-                        
-                    </Reportes>
-                </RutaProtegida>
+                <Route exact path="/Admin/Reportes/Organigrama">
+                    <Organigrama></Organigrama>
+                </Route>
                 <Route exact path="/Formulario/:idPuesto/:nombre/:idDepartamento">
                     <FormularioAplicante>
                     </FormularioAplicante>
@@ -67,6 +67,12 @@ function Rutas() {
                 </Route>
                 <Route exact path="/Usuario2">
                     <Usuario2></Usuario2>
+                </Route>
+                <Route exact path="/Reclutador">
+                    <InicioRe></InicioRe>
+                </Route>
+                <Route exact path="/Admin/Reportes">
+                    <Reportes></Reportes>
                 </Route>
                 </AuthProvider>
             </Switch>

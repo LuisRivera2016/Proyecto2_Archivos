@@ -37,7 +37,7 @@ function Reportes() {
                 }
         }>Imagen</button>
         </div>
-        <Link to="/Admin">
+        <Link to="/Admin/Reportes">
           <button className="btn btn-success">Regresar</button>
         </Link>
       </div>

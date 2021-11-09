@@ -324,10 +324,11 @@ function lecturaDepartamentos(result,padre){
     }
 }
 
+var auxCategoria = [];
 //CATEGORIAS
  async function InsertarCategorias(lista) {
     //console.log("\n#########---CATEGORIAS---##########")
-    var auxCategoria = [];
+   
     lista.forEach(element =>{
         if(!auxCategoria.includes(element[1])){
             auxCategoria.push(element[1]);
@@ -364,11 +365,12 @@ function lecturaDepartamentos(result,padre){
 
 //REQUISITO
 var auxRequisito = [];
+var auxTamano = [];
+var auxObligatorio = [];
  async function InsertarRequisito(lista) {
     //console.log("\n#########---REQUISITOS---##########")
     
-    var auxTamano = [];
-    var auxObligatorio = [];
+    
     lista.forEach(element =>{
         if(!auxRequisito.includes(element[1])){
             auxRequisito.push(element[1])
@@ -404,11 +406,11 @@ var auxRequisito = [];
     }
 }
 
-
+var auxFormato = [];
 //FORMATO
  async function InsertarFormato(lista,lista2) {
     //console.log("\n#########---FORMATO---##########")
-    var auxFormato = []
+    
     lista.forEach(element => {
         if (!auxFormato.includes(element[1])) {
             auxFormato.push(element[1])
@@ -655,7 +657,34 @@ app.put('/actualizarRequisitos', async (req, res) => {
    
   });
 
+//-------------------------------------------------------------------
+app.get('/getInsertados',async(req,res)=>{
+  //OBTENER INSERTADOS
+    res.send({"Departamentos":AuxDepart,
+                "Puestos":AuxPuestos,
+                "Categorias":auxCategoria,
+                "Requisitos":auxRequisito,
+                "Formatos":auxFormato
+    }); 
+    
+  });
+
 //---------------------------------------------------------------------
+
+process.on('uncaughtException', (error, origin) => {
+    console.log('----- Uncaught exception -----')
+    console.log(error)
+    console.log('----- Exception origin -----')
+    console.log(origin)
+  })
+  
+  process.on('unhandledRejection', (reason, promise) => {
+    console.log('----- Unhandled Rejection at -----')
+    console.log(promise)
+    console.log('----- Reason -----')
+    console.log(reason)
+  })
+
 const port = process.env.PORT || 3001;
 
 app.listen(port,()=>{

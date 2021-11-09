@@ -1,7 +1,7 @@
 import { useEffect,useState,useContext} from 'react';
 import Axios  from 'axios';
 import React from 'react'
-import {Link,Redirect} from 'react-router-dom';
+import {Link,Redirect,useHistory} from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Modal,ModalBody,ModalHeader,ModalFooter} from 'reactstrap';
 import AuthContext from '../Context/UsuarioData.js';
@@ -11,7 +11,12 @@ function Inicio() {
     const {user} = useContext(AuthContext);
     const [requisitos, setRequisitos] = useState([]);
     const [file, setFile] = useState([]);
+    const history = useHistory();
 
+    const routeChange = () =>{
+        let path = `/Usuario`;
+        history.push(path);
+    }
 
     useEffect(()=>{
         console.log('idU '+user.id_Usuario+' IdD '+user.Nombre);
@@ -31,7 +36,7 @@ function Inicio() {
     function actualizarEntrada() {
         Axios.put(`http://localhost:3001/Usuario/actualizarEntrada/${user.Nombre}`,{
         }).then((usuarios)=>{
-            <Redirect to="/"></Redirect>
+            <Redirect to="/"/>
         }).catch((err)=>{
             alert('No se pudo Salir');
         });
@@ -82,14 +87,18 @@ function Inicio() {
             </tbody>
         </table>
        
-        
+        <div>
+           
+           
+        </div> 
+
+
         <br/>
-            
-            <button className="btn btn-success" onClick={(e)=>{
-                e.preventDefault();
+            <Link to="/" className="btn btn-success" onClick={(e)=>{
                 actualizarEntrada();
             }}>Salir
-            </button>
+            </Link>
+            
             <br/><br/>  
         </div>
     )

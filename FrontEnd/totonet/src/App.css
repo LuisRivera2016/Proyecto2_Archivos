@@ -36,3 +36,14 @@
     transform: rotate(360deg);
   }
 }
+
+.div-Reportes{
+  display: flex;
+  justify-content: space-between;
+  margin-left: 15px;
+  margin-right: 15px;
+}
+
+.div-Reportes button{
+  width: 200px;
+}

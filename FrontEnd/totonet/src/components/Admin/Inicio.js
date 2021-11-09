@@ -84,7 +84,11 @@ function Inicio() {
     return (
       <div className="container-app">
       <div className="nav-container">{/* <Navbar/> */}
-      <Link to="/Admin/Form">
+            <Link to="/Admin/Carga">
+            <button className="btn btn-success">Cargar Datos
+            </button>
+            </Link>
+            <Link to="/Admin/Form">
             <button className="btn btn-success">Agregar
             </button>
             </Link>{"  "}
@@ -93,11 +97,7 @@ function Inicio() {
             </button>
             </Link>{"  "}
             <Link to="/Admin/Reportes">
-            <button className="btn btn-success">Organigrama
-            </button>
-            </Link>
-            <Link to="/Admin/Top">
-            <button className="btn btn-success">Top Invitaciones
+            <button className="btn btn-success">Reportes
             </button>
             </Link>
       </div>

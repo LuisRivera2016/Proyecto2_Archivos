@@ -37,6 +37,11 @@ function Home() {
             case 1:
                 return `/Admin` 
                 break;
+            case 2:
+                return `/Coordinador`
+                break;
+            case 3:
+                return `/Reclutador`
             case 4:
                 return `/Revisor`
                 break;
