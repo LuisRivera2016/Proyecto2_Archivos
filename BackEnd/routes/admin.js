@@ -201,6 +201,38 @@ router.get('/getInvitaciones', async(req, res) => {
         res.json(Invitaciones);
     
 });
+//OBTENER DOCUMENTOS RECHAZADOS
+router.get('/getRechazos', async(req, res) => {
+    
+    var sql = ``;
+    let result;
+    
+        sql = `SELECT APLICANTE.DPI,APLICANTE.NOMBRE,COUNT(APLICANTE.ID_APLICANTE) AS NO FROM APLICANTE 
+        INNER JOIN USUARIO_REQUISITO ON APLICANTE.DPI = USUARIO_REQUISITO.DPI
+        WHERE USUARIO_REQUISITO.ESTADO = 2 AND ROWNUM <=5
+        GROUP BY APLICANTE.DPI,APLICANTE.NOMBRE
+        ORDER BY NO DESC`;
+        console.log(sql);
+            try {
+                 result = await dbConexion.Connection(sql, [], true); 
+                 Rechazos = [];
+
+                 result.rows.map(us => {
+                     let UserSchema = {
+                         "DPI":us[0],
+                         "Nombre": us[1],
+                         "Numero": us[2]
+                     }
+                     Rechazos.push(UserSchema);
+                 })
+                 res.json(Rechazos);
+            } catch (error) {
+                console.log(error);
+            }
+    
+      
+    
+});
 
 
 

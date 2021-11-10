@@ -5,7 +5,7 @@ import {Link} from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Modal,ModalBody,ModalHeader,ModalFooter} from 'reactstrap';
 import AuthContext from '../Context/UsuarioData.js';
-
+import Cookies from 'js-cookie';
 
 function Inicio() {
     const {user} = useContext(AuthContext);
@@ -113,7 +113,9 @@ function Inicio() {
         
         <br/>
             <Link to="/">
-            <button className="btn btn-success">Salir
+            <button className="btn btn-success" onClick={(e)=>{
+                Cookies.remove("refreshToken");
+            }}>Salir
             </button>
             </Link><br/><br/>
            

@@ -3,7 +3,8 @@ import Axios  from 'axios';
 import React from 'react'
 import {Link} from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Modal,ModalBody,ModalHeader,ModalFooter} from 'reactstrap'; 
+import {Modal,ModalBody,ModalHeader,ModalFooter} from 'reactstrap';
+import Swal from "sweetalert2"; 
 
 function Admin() {
     const [roles, setRoles] = useState([]);
@@ -39,9 +40,9 @@ const Submit = ()=>{
         id_Tipo: rol,
         id_Departamento: rolD
     }).then(()=>{
-        alert('Usuario agregado con Exito');
+        Swal.fire('Usuario Agregado con Exito')
     }).catch((e)=>{
-        alert('Usuario no Insertado');
+        Swal.fire('No se pudo agregar el Usuario')
     })
 }
 
@@ -64,9 +65,10 @@ const Submit = ()=>{
             <label fo="lname">Tipo de Usuario:</label><br/>
             <select name="Tipo_Usuario" onChange={(e)=>{
                 
-                setRol(e.target.options.selectedIndex+2);
-                console.log(e.target.options.selectedIndex+2);
+                setRol(e.target.options.selectedIndex+1);
+                console.log(e.target.options.selectedIndex+1);
             }}>
+                <option key={0} value={``}>Seleccionar Tipo</option>
             {roles.map((index)=>{
                 return <option key={index.id_Tipo} value={index.Nombre}>{index.Nombre}</option>
             })}
@@ -75,9 +77,10 @@ const Submit = ()=>{
             <label fo="lname">Departamento al que pertenecera:</label><br/>
             <select name="Departamentos" onChange={(e)=>{
                 
-                setRolD(e.target.options.selectedIndex+1);
-                console.log(e.target.options.selectedIndex+1);
+                setRolD(e.target.options.selectedIndex);
+                console.log(e.target.options.selectedIndex);
             }}>
+                <option key={0} value={``}>Seleccionar Departamento</option>
             {departamentos.map((index)=>{
                 return <option key={index.id_Departamento} value={index.Nombre}>{index.Nombre}</option>
             })}

@@ -4,6 +4,7 @@ import React from 'react'
 import {Link} from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Modal,ModalBody,ModalHeader,ModalFooter} from 'reactstrap';
+import Cookies from 'js-cookie';
 
 function Inicio() {
     const [usuarios, setUsuarios] = useState([]);
@@ -93,7 +94,9 @@ function Inicio() {
             </button>
             </Link>{"  "}
             <Link to="/">
-            <button className="btn btn-success">Salir
+            <button className="btn btn-success" onClick={(e)=>{
+                Cookies.remove("refreshToken");
+            }}>Salir
             </button>
             </Link>{"  "}
             <Link to="/Admin/Reportes">

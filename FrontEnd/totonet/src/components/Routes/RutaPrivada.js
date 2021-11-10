@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import {Route,Redirect} from "react-router-dom"
 import AuthContext  from "../Context/UsuarioData";
+import Cookies from 'js-cookie';
 
 function RutaProtegida(props){
     const {user} = useContext(AuthContext);
@@ -9,7 +10,7 @@ function RutaProtegida(props){
         <Route
             {...rest}
             render={(props)=>{
-                if(user.Nombre){
+                if(Cookies.get("refreshToken")){
                     return <Component/>;
                 }else{
                     return(

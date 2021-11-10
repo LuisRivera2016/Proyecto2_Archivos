@@ -20,8 +20,8 @@ function reportes() {
             <button className="btn btn-success">Top Invitaciones
             </button>
             </Link>{"  "}<br/>
-            <Link to="/Admin">
-            <button className="btn btn-success">Otro
+            <Link to="/Admin/Reportes/Rechazos">
+            <button className="btn btn-success">Top Documentos Rechazados
             </button>
             </Link>
             <Link to="/Admin">

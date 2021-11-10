@@ -17,6 +17,7 @@ import Usuario2 from '../Usuario/Inicio2.js';
 import InicioRe from '../Reclutador/Inicio.js';
 import Reportes from '../Admin/reportes.js';
 import Invitaciones from '../Admin/TopInvitaciones.js';
+import Rechazos from '../Admin/TopRechazos.js';
 //
 
 
@@ -48,36 +49,39 @@ function Rutas() {
                     <Login> 
                     </Login>
                 </Route>
-                <Route exact path="/Admin/Reportes/Organigrama">
+                <RutaProtegida exact path="/Admin/Reportes/Organigrama">
                     <Organigrama></Organigrama>
-                </Route>
-                <Route exact path="/Admin/Reportes/Invitaciones">
+                </RutaProtegida>
+                <RutaProtegida exact path="/Admin/Reportes/Invitaciones">
                     <Invitaciones></Invitaciones>
-                </Route>
+                </RutaProtegida>
+                <RutaProtegida exact path="/Admin/Reportes/Rechazos">
+                    <Rechazos></Rechazos>
+                </RutaProtegida>
                 <Route exact path="/Formulario/:idPuesto/:nombre/:idDepartamento">
                     <FormularioAplicante>
                     </FormularioAplicante>
                 </Route>
-                <Route exact path="/Revisor">
+                <RutaProtegida exact path="/Revisor">
                     <InicioR></InicioR>
-                </Route>
-                <Route exact path="/Usuario">
+                </RutaProtegida>
+                <RutaProtegida exact path="/Usuario">
                     <InicioU>
 
                     </InicioU>
-                </Route>
-                <Route exact path="/Revisor/Requisitos/:idPuesto/:dpi">
+                </RutaProtegida>
+                <RutaProtegida exact path="/Revisor/Requisitos/:idPuesto/:dpi">
                     <Requisitos></Requisitos>
-                </Route>
-                <Route exact path="/Usuario2">
+                </RutaProtegida>
+                <RutaProtegida exact path="/Usuario2">
                     <Usuario2></Usuario2>
-                </Route>
-                <Route exact path="/Reclutador">
+                </RutaProtegida>
+                <RutaProtegida exact path="/Reclutador">
                     <InicioRe></InicioRe>
-                </Route>
-                <Route exact path="/Admin/Reportes">
+                </RutaProtegida>
+                <RutaProtegida exact path="/Admin/Reportes">
                     <Reportes></Reportes>
-                </Route>
+                </RutaProtegida>
                 </AuthProvider>
             </Switch>
         </Router> 
