@@ -426,4 +426,58 @@ router.put("/actualizarEntrada/:dpi", async (req, res) => {
   }
 });
 
+//OBTENER DATOSAPLICANTE
+router.get("/getDatosAplicante/:dpi", async (req, res) => {
+  const dpi = req.params.dpi;
+  let archivoD = {};
+  let resultP2;
+  //OBTENER FORMATOS
+    let sql2 = `SELECT * FROM APLICANTE WHERE DPI = ${dpi}`;
+    console.log(sql2);
+    try {
+      resultP2 = await dbConexion.Connection(sql2, [], true);
+      resultP2.rows.map((us) => {
+         archivoD = {
+           Nombre: us[3],
+           Apellido: us[4],
+           Correo: us[5],
+           Direccion: us[6],
+           Telefono: us[7]
+         };
+       });
+       console.log(archivoD);
+       res.json(archivoD);
+    } catch (error) {
+      console.log(error);
+    } 
+  
+});
+
+//ACTUALIZAR USUARIO
+router.put("/actualizarUsuario/:dpi", async (req, res) => {
+  //console.log(req.body);
+  const nombre = req.body.Nombre;
+  const apellido = req.body.Apellido;
+  const correo = req.body.Correo;
+  const direccion = req.body.Direccion;
+  const telefono = req.body.Telefono;
+  const dpi = req.params.dpi;
+
+  var sql = ``;
+  sql = `UPDATE APLICANTE SET
+  Nombre = '${nombre}',
+  Apellido = '${apellido}',
+  Correo = '${correo}',
+  Direccion = '${direccion}',
+  Telefono = ${telefono}
+  WHERE DPI =  ${dpi}`;
+  console.log(sql);
+  try {
+    let result = await dbConexion.Connection(sql, [], true);
+    res.status(200).send({ status: 200, message: `Se Actualizo` });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 module.exports = router;

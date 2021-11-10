@@ -173,7 +173,34 @@ router.get('/getPuestos', async(req, res) => {
     
 });
 
-
+//OBTENER INVITACIONES
+router.get('/getInvitaciones', async(req, res) => {
+    
+    var sql = ``;
+    let result;
+    
+        sql = `SELECT NOMBRE,COUNT(ID_USUARIO) AS NO FROM INVITACION
+        WHERE ROWNUM <= 5
+        GROUP BY NOMBRE
+        ORDER BY NO DESC`;
+        
+            try {
+                 result = await dbConexion.Connection(sql, [], true); 
+            } catch (error) {
+                console.log(error);
+            }
+    
+        Invitaciones = [];
+        result.rows.map(us => {
+            let UserSchema = {
+                "Nombre":us[0],
+                "Numero": us[1]
+            }
+            Invitaciones.push(UserSchema);
+        })
+        res.json(Invitaciones);
+    
+});
 
 
 

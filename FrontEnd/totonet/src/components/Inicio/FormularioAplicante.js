@@ -209,6 +209,9 @@ return (
         
         </div>
         <div>
+          <h2>Subir CV: .pdf</h2>
+        </div>
+        <div>
         <input type="file" multiple onChange={saveFile} />
         </div>
         <button className="btn-primary" onClick={handleFormSubmit,uploadFile}>

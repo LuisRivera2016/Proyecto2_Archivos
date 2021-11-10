@@ -16,6 +16,7 @@ import Requisitos from '../Revisor/Requisitos.js';
 import Usuario2 from '../Usuario/Inicio2.js';
 import InicioRe from '../Reclutador/Inicio.js';
 import Reportes from '../Admin/reportes.js';
+import Invitaciones from '../Admin/TopInvitaciones.js';
 //
 
 
@@ -49,6 +50,9 @@ function Rutas() {
                 </Route>
                 <Route exact path="/Admin/Reportes/Organigrama">
                     <Organigrama></Organigrama>
+                </Route>
+                <Route exact path="/Admin/Reportes/Invitaciones">
+                    <Invitaciones></Invitaciones>
                 </Route>
                 <Route exact path="/Formulario/:idPuesto/:nombre/:idDepartamento">
                     <FormularioAplicante>

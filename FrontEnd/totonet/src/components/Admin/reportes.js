@@ -16,7 +16,7 @@ function reportes() {
             <button className="btn btn-success">Organigrama
             </button>
             </Link><br/>
-            <Link to="/Admin/Form">
+            <Link to="/Admin/Reportes/Invitaciones">
             <button className="btn btn-success">Top Invitaciones
             </button>
             </Link>{"  "}<br/>
