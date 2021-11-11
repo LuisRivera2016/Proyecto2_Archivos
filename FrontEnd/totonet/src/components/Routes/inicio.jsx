@@ -18,6 +18,8 @@ import InicioRe from '../Reclutador/Inicio.js';
 import Reportes from '../Admin/reportes.js';
 import Invitaciones from '../Admin/TopInvitaciones.js';
 import Rechazos from '../Admin/TopRechazos.js';
+import Coordinador from '../Coordinador/Inicio.js';
+import Planilla from '../Coordinador/Planilla.js';
 //
 
 
@@ -67,7 +69,6 @@ function Rutas() {
                 </RutaProtegida>
                 <RutaProtegida exact path="/Usuario">
                     <InicioU>
-
                     </InicioU>
                 </RutaProtegida>
                 <RutaProtegida exact path="/Revisor/Requisitos/:idPuesto/:dpi/:correo">
@@ -81,6 +82,12 @@ function Rutas() {
                 </RutaProtegida>
                 <RutaProtegida exact path="/Admin/Reportes">
                     <Reportes></Reportes>
+                </RutaProtegida>
+                <RutaProtegida exact path="/Coordinador">
+                    <Coordinador></Coordinador>
+                </RutaProtegida>
+                <RutaProtegida exact path="/Coordinador/Planilla/:idDepartamento">
+                    <Planilla></Planilla>
                 </RutaProtegida>
                 </AuthProvider>
             </Switch>

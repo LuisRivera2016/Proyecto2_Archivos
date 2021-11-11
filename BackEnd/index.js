@@ -7,6 +7,7 @@ const admin = require('./routes/admin');
 const userR = require('./routes/user');
 const revisorR = require('./routes/revisor.js');
 const reclutador = require('./routes/reclutador.js');
+const coordinador = require('./routes/coordinador.js');
 const { off } = require('process');
 const dbConexion = require('./database');
 const bcrypt = require('bcrypt');
@@ -34,7 +35,8 @@ app.use(express.json());
 app.use('/Admin',admin);//admin
 app.use('/Usuario',userR);//user
 app.use('/Revisor',revisorR);//revisor
-app.use('/Reclutador',reclutador);
+app.use('/Reclutador',reclutador);//reclutador
+app.use('/Coordinador',coordinador);//coordinador
 
 
 app.get('/',(req,res) =>{
