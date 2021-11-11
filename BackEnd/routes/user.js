@@ -3,6 +3,19 @@ const dbConexion = require("../database");
 const router = express.Router();
 const bcrypt = require("bcrypt");
 const { Router } = require("express");
+var nodemailer = require("nodemailer");
+
+let transport = nodemailer.createTransport({
+  service: "gmail",
+  port: 2525,
+  secure: false,
+  auth: {
+    type: "login",
+    user: "TotonetSA@gmail.com",
+    pass: "totonet12345", //-activar el acceso de aplicaciones no seguras a su cuenta de google
+  },
+});
+
 
 //REGISTRAR APLICANTE A PUESTO
 router.post("/aplicar", async (req, res) => {
@@ -358,6 +371,7 @@ router.put("/desaprobarDoc", async (req, res) => {
   const requisito = req.body.requisito;
   const dpi = req.body.dpi;
   const motivo = req.body.motivo;
+  const correo = req.body.correo;
   const tiempoTranscurrido = Date.now();
   const hoy = new Date(tiempoTranscurrido);
   var fechaC = hoy.toLocaleDateString();//21/10/2020
@@ -373,7 +387,24 @@ router.put("/desaprobarDoc", async (req, res) => {
   console.log(sql);
   try {
     let result = await dbConexion.Connection(sql, [], true);
-    res.status(200).send({ status: 200, message: `Se Actualizo` });
+
+    const message = {
+      from: "TotonetSA@gmail.com", // direccion que colocaron en el transport
+      to: `${correo}`, // direccion a la que van a enviar el correo
+      subject: "REQUISITO RECHAZADO TOTONET S.A", // asunto del correo
+      text: `EL REQUISITO: ${requisito} QUE SUBIO FUE RECHAZADO POR EL SIGUIENTE
+              MOTIVO: ${motivo} FAVOR DE CORREGIR LO MAS PRONTO POSIBLE GRACIAS.`, // contenido
+    };
+
+    transport.sendMail(message, function (err, info) {
+      if (err) {
+        console.log(err);
+      } else {
+        res.status(200).send({ status: 200, message: `Motivo Enviado` });
+      }
+    });
+
+    // res.status(200).send({ status: 200, message: `Se Actualizo` });
   } catch (error) {
     console.log(error);
   }

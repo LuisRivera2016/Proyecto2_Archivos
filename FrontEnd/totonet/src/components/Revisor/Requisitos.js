@@ -8,7 +8,7 @@ import AuthContext from "../Context/UsuarioData.js";
 import Swal from "sweetalert2";
 
 function Requisitos() {
-  let { idPuesto, dpi } = useParams();
+  let { idPuesto, dpi, correo } = useParams();
   const { user } = useContext(AuthContext);
   const [requisitos, setRequisitos] = useState([]);
 
@@ -124,7 +124,8 @@ function Requisitos() {
     Axios.put("http://localhost:3001/Usuario/desaprobarDoc", {
         requisito: doc,
         dpi: dpi,
-        motivo: motivo
+        motivo: motivo,
+        correo:correo
       })
         .then((e) => {
           alert("Se Desaprobo el Documento");
@@ -136,10 +137,7 @@ function Requisitos() {
 
   return (
     <div>
-      <p>
-        IDpuesto: {idPuesto} DPI: {dpi}
-      </p>
-
+     
       <table className="table table-bordered">
         <thead>
           <tr>

@@ -70,7 +70,7 @@ function Rutas() {
 
                     </InicioU>
                 </RutaProtegida>
-                <RutaProtegida exact path="/Revisor/Requisitos/:idPuesto/:dpi">
+                <RutaProtegida exact path="/Revisor/Requisitos/:idPuesto/:dpi/:correo">
                     <Requisitos></Requisitos>
                 </RutaProtegida>
                 <RutaProtegida exact path="/Usuario2">
